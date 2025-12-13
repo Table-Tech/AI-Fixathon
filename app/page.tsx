@@ -160,44 +160,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <p className="text-3xl md:text-4xl font-bold text-[var(--primary)]">
-                  50+
-                </p>
-                <p className="mt-2 text-[var(--muted-foreground)]">
-                  Regelingen
-                </p>
-              </div>
-              <div>
-                <p className="text-3xl md:text-4xl font-bold text-[var(--primary)]">
-                  1000+
-                </p>
-                <p className="mt-2 text-[var(--muted-foreground)]">
-                  Mensen geholpen
-                </p>
-              </div>
-              <div>
-                <p className="text-3xl md:text-4xl font-bold text-[var(--primary)]">
-                  5 min
-                </p>
-                <p className="mt-2 text-[var(--muted-foreground)]">
-                  Gemiddelde intake
-                </p>
-              </div>
-              <div>
-                <p className="text-3xl md:text-4xl font-bold text-[var(--primary)]">
-                  100%
-                </p>
-                <p className="mt-2 text-[var(--muted-foreground)]">Gratis</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Popular Schemes */}
         <section className="py-16 md:py-24 bg-[var(--muted)]">
           <div className="max-w-7xl mx-auto px-4">

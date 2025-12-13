@@ -72,3 +72,23 @@ body {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
+/* Cursor pointer for interactive elements */
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select,
+summary,
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
+input:disabled,
+button:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
