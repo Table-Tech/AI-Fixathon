@@ -1,26 +1,20 @@
 "use client";
 
 import { Header, Footer } from "@/components/layout";
-import { Button, Card, CardContent, Input, Badge } from "@/components/ui";
-import { REGELINGEN, CATEGORIES } from "@/lib/mock-data";
+import { Button, Card, CardContent, Input, Badge, Skeleton } from "@/components/ui";
+import { useRegelingen, CATEGORIES } from "@/hooks/use-regelingen";
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 export default function RegelingenPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showInfo, setShowInfo] = useState(false);
 
-  const filteredRegelingen = useMemo(() => {
-    return REGELINGEN.filter((regeling) => {
-      const matchesSearch =
-        regeling.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        regeling.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || regeling.category === selectedCategory;
-      return matchesSearch && matchesCategory && regeling.isActive;
-    });
-  }, [searchQuery, selectedCategory]);
+  const { regelingen: filteredRegelingen, isLoading, error } = useRegelingen({
+    category: selectedCategory,
+    searchQuery,
+  });
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -99,46 +93,76 @@ export default function RegelingenPage() {
         {/* Results */}
         <section className="py-8 md:py-12 px-4">
           <div className="max-w-7xl mx-auto">
-            <p className="text-[var(--muted-foreground)] mb-6">
-              {filteredRegelingen.length} regelingen gevonden
-            </p>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredRegelingen.map((regeling) => (
-                <Link key={regeling.id} href={`/regelingen/${regeling.slug}`}>
-                  <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <Badge variant={getCategoryColor(regeling.category) as "default" | "secondary" | "success" | "warning"}>
-                          {CATEGORIES.find((c) => c.value === regeling.category)?.label}
-                        </Badge>
-                      </div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        {regeling.name}
-                      </h3>
-                      <p className="text-[var(--muted-foreground)] text-sm mb-4 line-clamp-2">
-                        {regeling.shortDescription}
-                      </p>
-                      {regeling.maxBedrag && (
-                        <p className="text-[var(--primary)] font-medium text-sm">
-                          {regeling.maxBedrag}
-                        </p>
-                      )}
-                      <p className="text-xs text-[var(--muted-foreground)] mt-3">
-                        {regeling.provider}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-
-            {filteredRegelingen.length === 0 && (
+            {error ? (
               <div className="text-center py-12">
-                <p className="text-[var(--muted-foreground)]">
-                  Geen regelingen gevonden. Probeer een andere zoekterm of categorie.
+                <p className="text-red-500 mb-4">
+                  Er ging iets mis bij het laden van de regelingen.
                 </p>
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                  Probeer opnieuw
+                </Button>
               </div>
+            ) : isLoading ? (
+              <>
+                <Skeleton className="h-5 w-40 mb-6" />
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <Card key={i} className="h-full">
+                      <CardContent className="pt-6">
+                        <Skeleton className="h-6 w-24 mb-3" />
+                        <Skeleton className="h-6 w-full mb-2" />
+                        <Skeleton className="h-4 w-full mb-1" />
+                        <Skeleton className="h-4 w-3/4 mb-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-[var(--muted-foreground)] mb-6">
+                  {filteredRegelingen.length} regelingen gevonden
+                </p>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredRegelingen.map((regeling) => (
+                    <Link key={regeling.id} href={`/regelingen/${regeling.slug}`}>
+                      <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                        <CardContent className="pt-6">
+                          <div className="flex items-start justify-between gap-2 mb-3">
+                            <Badge variant={getCategoryColor(regeling.category) as "default" | "secondary" | "success" | "warning"}>
+                              {CATEGORIES.find((c) => c.value === regeling.category)?.label}
+                            </Badge>
+                          </div>
+                          <h3 className="text-lg font-semibold mb-2">
+                            {regeling.name}
+                          </h3>
+                          <p className="text-[var(--muted-foreground)] text-sm mb-4 line-clamp-2">
+                            {regeling.shortDescription}
+                          </p>
+                          {regeling.maxBedrag && (
+                            <p className="text-[var(--primary)] font-medium text-sm">
+                              {regeling.maxBedrag}
+                            </p>
+                          )}
+                          <p className="text-xs text-[var(--muted-foreground)] mt-3">
+                            {regeling.provider}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+
+                {filteredRegelingen.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-[var(--muted-foreground)]">
+                      Geen regelingen gevonden. Probeer een andere zoekterm of categorie.
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>

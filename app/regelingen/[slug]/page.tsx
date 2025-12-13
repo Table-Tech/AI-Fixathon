@@ -1,22 +1,144 @@
-import { Header, Footer } from "@/components/layout";
-import { Button, Card, CardContent, Badge } from "@/components/ui";
-import { REGELINGEN, CATEGORIES } from "@/lib/mock-data";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+"use client";
 
-interface Props {
-  params: Promise<{ slug: string }>;
+import { Header, Footer } from "@/components/layout";
+import { Button, Card, CardContent, Badge, Skeleton } from "@/components/ui";
+import { CATEGORIES } from "@/hooks/use-regelingen";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useParams, notFound } from "next/navigation";
+
+interface RegelingDetail {
+  id: string;
+  slug: string;
+  name: string;
+  shortDescription: string;
+  description: string;
+  category: string;
+  provider: string;
+  maxBedrag?: string;
+  requirements: string[];
+  documentsNeeded: string[];
+  aanvraagUrl?: string;
+  lastUpdated: string;
 }
 
-export default async function RegelingDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const regeling = REGELINGEN.find((r) => r.slug === slug);
+export default function RegelingDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
 
-  if (!regeling) {
+  const [regeling, setRegeling] = useState<RegelingDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchRegeling() {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/regelingen/${slug}`);
+        const result = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError("not_found");
+            return;
+          }
+          throw new Error(result.error || "Failed to fetch regeling");
+        }
+
+        const data = result.data;
+        const details = data.details;
+
+        setRegeling({
+          id: data.id,
+          slug: data.slug,
+          name: data.title,
+          shortDescription: details.short_description || details.description?.slice(0, 120) + "...",
+          description: details.description,
+          category: details.category,
+          provider: details.provider,
+          maxBedrag: details.estimated_amount,
+          requirements: details.requirements || [],
+          documentsNeeded: details.documents_needed || [],
+          aanvraagUrl: details.source_url,
+          lastUpdated: data.created_at,
+        });
+      } catch (err) {
+        console.error("Error fetching regeling:", err);
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (slug) {
+      fetchRegeling();
+    }
+  }, [slug]);
+
+  if (error === "not_found") {
     notFound();
   }
 
-  const categoryLabel = CATEGORIES.find((c) => c.value === regeling.category)?.label;
+  const categoryLabel = regeling
+    ? CATEGORIES.find((c) => c.value === regeling.category)?.label
+    : "";
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col pb-20 md:pb-0">
+        <Header />
+        <main className="flex-1">
+          <div className="bg-[var(--muted)] border-b border-[var(--border)]">
+            <div className="max-w-7xl mx-auto px-4 py-4">
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
+          <section className="py-8 md:py-12 px-4 bg-[var(--muted)]">
+            <div className="max-w-7xl mx-auto">
+              <Skeleton className="h-6 w-24 mb-4" />
+              <Skeleton className="h-12 w-96 mb-4" />
+              <Skeleton className="h-6 w-full max-w-3xl" />
+            </div>
+          </section>
+          <section className="py-8 md:py-12 px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <Skeleton className="h-6 w-48 mb-4" />
+                      <Skeleton className="h-4 w-full mb-2" />
+                      <Skeleton className="h-4 w-full mb-2" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !regeling) {
+    return (
+      <div className="min-h-screen flex flex-col pb-20 md:pb-0">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Er ging iets mis</h1>
+            <p className="text-[var(--muted-foreground)] mb-6">{error}</p>
+            <Link href="/regelingen">
+              <Button>Terug naar regelingen</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col pb-20 md:pb-0">
@@ -231,10 +353,4 @@ export default async function RegelingDetailPage({ params }: Props) {
       <Footer />
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  return REGELINGEN.map((regeling) => ({
-    slug: regeling.slug,
-  }));
 }

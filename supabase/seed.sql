@@ -1,5 +1,6 @@
 -- Hulpwijzer Seed Data: Dutch Benefits/Regelingen
 -- Run this after the migration in Supabase SQL Editor
+-- Categories: toeslagen, uitkeringen, kindregelingen, wonen
 
 INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, details) VALUES
 
@@ -13,7 +14,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Een maandelijkse bijdrage in de huurkosten voor mensen met een laag inkomen.",
     "short_description": "Bijdrage in de huurkosten",
-    "category": "housing",
+    "category": "wonen",
     "requirements": [
       "Je huurt een zelfstandige woning",
       "Je huur is niet hoger dan €879,66 per maand",
@@ -43,7 +44,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Een tegemoetkoming in de kosten van je zorgverzekering.",
     "short_description": "Bijdrage zorgverzekering",
-    "category": "healthcare",
+    "category": "toeslagen",
     "requirements": [
       "Je hebt een Nederlandse zorgverzekering",
       "Je inkomen is onder de inkomensgrens",
@@ -71,7 +72,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Een bijdrage in de kosten voor de opvoeding van je kind(eren).",
     "short_description": "Bijdrage per kind per kwartaal",
-    "category": "childcare",
+    "category": "kindregelingen",
     "requirements": [
       "Je verzorgt en voedt een kind op",
       "Het kind woont bij jou",
@@ -99,7 +100,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Extra geld bovenop de kinderbijslag voor gezinnen met een lager inkomen.",
     "short_description": "Extra toeslag voor gezinnen met laag inkomen",
-    "category": "childcare",
+    "category": "kindregelingen",
     "requirements": [
       "Je ontvangt kinderbijslag",
       "Je inkomen is onder de inkomensgrens",
@@ -127,7 +128,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Tegemoetkoming in de kosten van kinderopvang als je werkt of studeert.",
     "short_description": "Bijdrage kinderopvangkosten",
-    "category": "childcare",
+    "category": "kindregelingen",
     "requirements": [
       "Je werkt, volgt een opleiding of re-integratietraject",
       "Je kind gaat naar geregistreerde kinderopvang",
@@ -156,7 +157,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Eenmalige of periodieke vergoeding voor noodzakelijke kosten die je niet zelf kunt betalen.",
     "short_description": "Hulp bij onverwachte kosten",
-    "category": "income",
+    "category": "uitkeringen",
     "requirements": [
       "Je hebt een laag inkomen",
       "Je hebt geen vermogen om de kosten zelf te betalen",
@@ -185,7 +186,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Jaarlijkse toeslag voor mensen die langdurig een laag inkomen hebben.",
     "short_description": "Jaarlijkse toeslag bij langdurig laag inkomen",
-    "category": "income",
+    "category": "uitkeringen",
     "requirements": [
       "Je hebt minimaal 3 jaar een laag inkomen",
       "Je hebt geen uitzicht op inkomensverbetering",
@@ -213,7 +214,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Kwijtschelding van gemeentelijke belastingen zoals afvalstoffenheffing en rioolheffing.",
     "short_description": "Geen gemeentelijke belastingen betalen",
-    "category": "income",
+    "category": "uitkeringen",
     "requirements": [
       "Je hebt een laag inkomen",
       "Je hebt geen of weinig vermogen"
@@ -241,7 +242,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Hulp bij het oplossen van problematische schulden.",
     "short_description": "Professionele hulp bij schulden",
-    "category": "income",
+    "category": "uitkeringen",
     "requirements": [
       "Je hebt problematische schulden",
       "Je woont in Nederland"
@@ -269,7 +270,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Extra kindgebonden budget voor alleenstaande ouders.",
     "short_description": "Extra toeslag voor alleenstaande ouders",
-    "category": "childcare",
+    "category": "kindregelingen",
     "requirements": [
       "Je bent alleenstaande ouder",
       "Je ontvangt kindgebonden budget",
@@ -297,7 +298,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Maandelijkse uitkering als je geen of onvoldoende inkomen hebt om van te leven.",
     "short_description": "Basisinkomen als je geen werk hebt",
-    "category": "income",
+    "category": "uitkeringen",
     "requirements": [
       "Je hebt geen of te weinig inkomen",
       "Je hebt geen vermogen boven de grens",
@@ -329,7 +330,7 @@ INSERT INTO public.regelingen (slug, title, eligible_for, min_age, max_age, deta
   '{
     "description": "Extra toeslag als je woonkosten hoger zijn dan normaal bij een laag inkomen.",
     "short_description": "Extra hulp bij hoge woonkosten",
-    "category": "housing",
+    "category": "wonen",
     "requirements": [
       "Je hebt een bijstandsuitkering of laag inkomen",
       "Je woonkosten zijn hoger dan de bijstandsnorm",
