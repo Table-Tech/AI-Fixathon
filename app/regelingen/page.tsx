@@ -168,7 +168,7 @@ export default function RegelingenPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
+        <section className="py-12 md:py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-bold">
               Niet zeker waar je recht op hebt?
