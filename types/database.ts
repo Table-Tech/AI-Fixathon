@@ -11,6 +11,26 @@ export type Database = {
           name: string | null;
           created_at: string;
           updated_at: string;
+          // Persoonlijk
+          date_of_birth: string | null;
+          postal_code: string | null;
+          city: string | null;
+          // Gezinssituatie
+          number_of_children: number | null;
+          children_ages: number[] | null;
+          is_single_parent: boolean | null;
+          // Financieel
+          income_range: IncomeRange | null;
+          employment_status: EmploymentStatus | null;
+          receives_benefits: string[] | null;
+          // Wonen
+          housing_type: HousingType | null;
+          monthly_rent: number | null;
+          // Eligibility
+          has_dutch_residence: boolean | null;
+          has_health_insurance: boolean | null;
+          has_debts: boolean | null;
+          savings_under_limit: boolean | null;
         };
         Insert: {
           id: string;
@@ -18,6 +38,21 @@ export type Database = {
           name?: string | null;
           created_at?: string;
           updated_at?: string;
+          date_of_birth?: string | null;
+          postal_code?: string | null;
+          city?: string | null;
+          number_of_children?: number | null;
+          children_ages?: number[] | null;
+          is_single_parent?: boolean | null;
+          income_range?: IncomeRange | null;
+          employment_status?: EmploymentStatus | null;
+          receives_benefits?: string[] | null;
+          housing_type?: HousingType | null;
+          monthly_rent?: number | null;
+          has_dutch_residence?: boolean | null;
+          has_health_insurance?: boolean | null;
+          has_debts?: boolean | null;
+          savings_under_limit?: boolean | null;
         };
         Update: {
           id?: string;
@@ -25,6 +60,21 @@ export type Database = {
           name?: string | null;
           created_at?: string;
           updated_at?: string;
+          date_of_birth?: string | null;
+          postal_code?: string | null;
+          city?: string | null;
+          number_of_children?: number | null;
+          children_ages?: number[] | null;
+          is_single_parent?: boolean | null;
+          income_range?: IncomeRange | null;
+          employment_status?: EmploymentStatus | null;
+          receives_benefits?: string[] | null;
+          housing_type?: HousingType | null;
+          monthly_rent?: number | null;
+          has_dutch_residence?: boolean | null;
+          has_health_insurance?: boolean | null;
+          has_debts?: boolean | null;
+          savings_under_limit?: boolean | null;
         };
       };
       regelingen: {
@@ -218,6 +268,9 @@ export type Database = {
 export type TaskStatus = "pending" | "in_progress" | "completed";
 export type RiskLevel = "low" | "medium" | "high";
 export type ChatRole = "user" | "assistant";
+export type IncomeRange = "low" | "middle" | "high";
+export type EmploymentStatus = "employed" | "unemployed" | "self_employed" | "student" | "retired";
+export type HousingType = "rent" | "own";
 
 export interface RegelingDetails {
   description: string;

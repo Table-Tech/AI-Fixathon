@@ -1,12 +1,11 @@
 "use client";
 
-import { Header, Footer } from "@/components/layout";
 import { Button, Card, CardContent, Input } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function LoginPage() {
+export default function RegistrerenPage() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -35,7 +34,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col pb-20 md:pb-0">
-      <Header />
+      {/* Simple header */}
+      <header className="w-full border-b border-[var(--border)] bg-[var(--background)]">
+        <nav className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">HW</span>
+            </div>
+            <span className="text-xl font-bold">Hulpwijzer</span>
+          </Link>
+        </nav>
+      </header>
 
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
@@ -46,9 +55,9 @@ export default function LoginPage() {
                   <div className="w-16 h-16 bg-[var(--primary)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-white font-bold text-2xl">HW</span>
                   </div>
-                  <h1 className="text-2xl font-bold">Inloggen</h1>
+                  <h1 className="text-2xl font-bold">Account aanmaken</h1>
                   <p className="mt-2 text-[var(--muted-foreground)]">
-                    Vul je e-mailadres in om in te loggen
+                    Vul je e-mailadres in om te registreren
                   </p>
                 </div>
 
@@ -67,7 +76,7 @@ export default function LoginPage() {
                     className="w-full"
                     disabled={isLoading || !email}
                   >
-                    {isLoading ? "Bezig met versturen..." : "Verstuur inloglink"}
+                    {isLoading ? "Bezig met versturen..." : "Registreren"}
                   </Button>
 
                   {error && (
@@ -77,17 +86,17 @@ export default function LoginPage() {
 
                 <div className="mt-6 text-center">
                   <p className="text-sm text-[var(--muted-foreground)]">
-                    Nog geen account?{" "}
+                    Heb je al een account?{" "}
                     <Link
-                      href="/registreren"
+                      href="/login"
                       className="text-[var(--primary)] hover:underline"
                     >
-                      Registreren
+                      Inloggen
                     </Link>
                   </p>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-[var(--border)]">
+                <div className="mt-8 pt-6 border-t border-[var(--border)]">
                   <p className="text-xs text-center text-[var(--muted-foreground)]">
                     We sturen je een beveiligde link waarmee je direct kunt
                     inloggen. Geen wachtwoord nodig.
@@ -112,13 +121,12 @@ export default function LoginPage() {
                   </svg>
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Check je inbox!</h2>
-                <p className="text-[var(--muted-foreground)] mb-6">
-                  We hebben een inloglink gestuurd naar:
+                <p className="text-[var(--muted-foreground)] mb-4">
+                  We hebben een bevestigingslink gestuurd naar:
                 </p>
                 <p className="font-medium text-lg mb-6">{email}</p>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Klik op de link in de e-mail om in te loggen. De link is 15
-                  minuten geldig.
+                  Klik op de link in de e-mail om je account te activeren.
                 </p>
 
                 <Button
@@ -136,8 +144,6 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </main>
-
-      <Footer />
     </div>
   );
 }

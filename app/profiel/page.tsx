@@ -1,13 +1,24 @@
 "use client";
 
-import { Button, Card, CardContent, Avatar } from "@/components/ui";
+import { Button, Card, CardContent, Avatar, Skeleton } from "@/components/ui";
+import { useAuth } from "@/hooks";
 import Link from "next/link";
-import { useState } from "react";
 
 export default function ProfielPage() {
-  const [isLoggedIn] = useState(false); // Will be connected to auth later
+  const { user, loading, signOut } = useAuth();
 
-  if (!isLoggedIn) {
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-20 md:pb-0">
+        <div className="px-4 py-6 max-w-3xl mx-auto">
+          <Skeleton className="h-8 w-32 mb-4" />
+          <Skeleton className="h-40 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return (
       <div className="min-h-screen pb-20 md:pb-0">
         <div className="px-4 py-6 max-w-3xl mx-auto">
@@ -44,9 +55,9 @@ export default function ProfielPage() {
               <Link href="/login">
                 <Button className="w-full mb-2">Inloggen</Button>
               </Link>
-              <Link href="/assistent">
+              <Link href="/registreren">
                 <Button variant="outline" className="w-full">
-                  Eerst de assistent proberen
+                  Registreren
                 </Button>
               </Link>
             </CardContent>
@@ -150,71 +161,36 @@ export default function ProfielPage() {
   }
 
   // Logged in state
+  const userName = user.user_metadata?.name || user.email?.split("@")[0] || "Gebruiker";
+  const userInitials = userName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+
   return (
     <div className="min-h-screen pb-20 md:pb-0">
       <div className="px-4 py-6 max-w-3xl mx-auto">
         {/* Header with user info */}
         <div className="flex items-center gap-4 mb-6">
-          <Avatar fallback="MV" size="lg" className="w-16 h-16 text-xl" />
+          <Avatar fallback={userInitials} size="lg" className="w-16 h-16 text-xl" />
           <div>
-            <h1 className="text-xl font-bold">Maria de Vries</h1>
-            <p className="text-sm text-[var(--muted-foreground)]">maria@email.nl</p>
+            <h1 className="text-xl font-bold">{userName}</h1>
+            <p className="text-sm text-[var(--muted-foreground)]">{user.email}</p>
           </div>
-        </div>
-
-        {/* Quick stats */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <Card>
-            <CardContent className="p-3 text-center">
-              <p className="text-2xl font-bold text-[var(--primary)]">3</p>
-              <p className="text-xs text-[var(--muted-foreground)]">Matches</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <p className="text-2xl font-bold text-[var(--primary)]">1</p>
-              <p className="text-xs text-[var(--muted-foreground)]">Aanvragen</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <p className="text-2xl font-bold text-[var(--primary)]">2</p>
-              <p className="text-xs text-[var(--muted-foreground)]">Documenten</p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Menu items */}
         <div className="space-y-3">
           <Card>
             <CardContent className="p-0">
-              <SettingsItem
-                icon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
-                }
-                label="Mijn gegevens"
-                showArrow
-              />
-              <SettingsItem
-                icon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
-                }
-                label="Mijn documenten"
-                showArrow
-              />
-              <SettingsItem
-                icon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                  </svg>
-                }
-                label="Meldingen"
-                showArrow
-              />
+              <Link href="/profiel/gegevens">
+                <SettingsItem
+                  icon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  }
+                  label="Mijn gegevens"
+                  showArrow
+                />
+              </Link>
             </CardContent>
           </Card>
 
@@ -259,7 +235,7 @@ export default function ProfielPage() {
 
           <Card className="border-[var(--destructive)]/20">
             <CardContent className="p-0">
-              <button className="w-full cursor-pointer">
+              <button className="w-full cursor-pointer" onClick={signOut}>
                 <SettingsItem
                   icon={
                     <svg className="w-5 h-5 text-[var(--destructive)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
