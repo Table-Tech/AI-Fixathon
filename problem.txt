@@ -1,0 +1,244 @@
+What “personal assistant” means in your app
+
+Think of it as 3 layers:
+
+Conversational helper (voice + chat)
+
+Talks like a real person, in plain language
+
+Explains options and asks only what’s needed
+
+Reads things out loud and can accept voice replies
+
+Workflow engine (Activepieces)
+
+Runs automations: reminders, document requests, drafting forms, routing to a case worker
+
+Connects to email/SMS/WhatsApp (where allowed), calendar, storage, CRM-like case board
+
+Verification + approval (human-in-the-loop)
+
+A helper/case worker approves drafts, messages, and submissions
+
+Full audit trail of what the AI suggested and why
+
+Must-have assistant features (the “wow” core)
+1) Voice-first intake (ElevenLabs + your UI)
+
+A “Start a scan” button: user speaks, assistant asks follow-ups
+
+Output is a structured Situation Profile (not a blob of text)
+
+Always shows a summary screen:
+“Here’s what I understood. Edit anything.”
+
+Key UX: user can switch between voice and text at any time.
+
+2) Personalized eligibility coaching
+
+Assistant should:
+
+present top 3 highest-impact supports first (“most money / fastest / lowest paperwork”)
+
+explain why each match appears (“because you live in X…”)
+
+ask missing questions only when needed (“To confirm, is your rent above/below…?”)
+
+provide a “confidence” label + what would confirm it
+
+3) “Next step” autopilot (with approval gates)
+
+Assistant can automatically:
+
+create a checklist of missing documents
+
+generate drafts (forms, cover letters, explanation texts)
+
+schedule reminders (“upload payslip before Friday”)
+
+prepare a handoff package to a case worker
+
+But it cannot:
+
+submit applications
+
+send messages to municipalities/funds as if final
+
+take irreversible actions
+
+Instead it produces Drafts → Review → Send/Submit.
+
+4) Proactive reminders + nudges
+
+This is where Activepieces shines:
+
+deadlines/renewals reminders
+
+“still missing doc X” nudges
+
+“status check” pings
+
+“don’t forget to update income change” reminders
+
+You can make reminders feel supportive:
+
+“Want me to remind you tomorrow morning or next week?”
+
+5) Human handoff that feels natural
+
+At any point the assistant can say:
+
+“Would you like a helper to review this before we continue?”
+and then:
+
+send a structured case summary + drafts to the helper dashboard
+
+start a chat thread with the helper (user doesn’t feel abandoned)
+
+Recommended flows you can automate with Activepieces
+Flow A — “Eligibility scan → matches → action plan”
+
+Trigger: user finishes intake
+Steps:
+
+call matching service (rules + LLM explanations)
+
+save matches + reasoning
+
+generate “Top 3 next steps”
+
+notify user (in-app + optional WhatsApp/SMS/email)
+
+create tasks in “My timeline”
+
+Flow B — “Document request loop”
+
+Trigger: user selects a scheme
+Steps:
+
+produce scheme-specific doc checklist
+
+schedule reminders until docs received
+
+when docs uploaded: notify helper for review if required
+
+update readiness status (“ready to draft / ready for review”)
+
+Flow C — “Draft application packet”
+
+Trigger: all required info/docs present
+Steps:
+
+prefill form fields from profile
+
+generate cover letter / explanation (LLM)
+
+package into “Draft submission”
+
+route to helper queue for approval
+
+once approved: user can download/send or helper submits via official channel
+
+Flow D — “Renewal tracker”
+
+Trigger: benefit activated
+Steps:
+
+store renewal date + required evidence types
+
+send reminders at T-30 / T-14 / T-3 days
+
+build renewal draft packet
+
+route to helper for review
+
+How ElevenLabs fits (practically)
+
+ElevenLabs gives you:
+
+TTS (assistant speaks) → great for low literacy and trust
+
+STT depends on your stack (ElevenLabs has STT options, or you can use another provider)
+Either way, you want:
+
+voice input → text → structured extraction → confirmation UI
+
+text output → ElevenLabs speech for playback
+
+Must-have controls:
+
+“Play / Pause / Repeat”
+
+“Show transcript”
+
+“Switch to text mode”
+
+“Privacy mode” (no voice stored, if possible)
+
+The guardrails you should implement (to satisfy the constraints)
+
+These are design-level, not “later”.
+
+A) Action permissions (“capabilities”)
+
+Tag actions by risk:
+
+Low risk: reminders, checklists, explanations
+
+Medium: drafting documents, generating prefilled fields
+
+High: sending to external parties, submitting applications, changing official records
+
+Only allow:
+
+low/medium automatically
+
+high only with explicit approval (helper + user)
+
+B) Consent & visibility
+
+show what data is used for each recommendation
+
+allow “answer in ranges” (income band) before exact numbers
+
+“export my case” and “delete my data” buttons
+
+C) Audit trail
+
+For every recommendation/draft:
+
+source schemes + last verified date
+
+the fields used (not raw sensitive docs)
+
+what’s missing
+
+who approved what
+
+Extra assistant features that build trust
+
+“You’re in control” language: “I can draft it — you decide.”
+
+A “What happens next?” screen after every step
+
+A “Why are you asking this?” button on sensitive questions
+
+A “Safety check” before submission: common mistakes + risks
+
+A realistic hackathon MVP for this assistant
+
+If you want something that feels like the whole product but is doable:
+
+Voice/text intake → Situation Profile
+
+Match against 8–12 schemes (1 municipality + 1 national set)
+
+Show top matches with plain-language explanations
+
+“Generate draft packet” (prefill + cover letter)
+
+Helper review page (approve / ask changes)
+
+Activepieces reminders for 1 deadline flow
+
+That’s already a legit “personal assistant”, not a demo chatbot.
