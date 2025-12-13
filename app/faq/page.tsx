@@ -3,9 +3,11 @@
 import { Header, Footer } from "@/components/layout";
 import { Card, CardContent } from "@/components/ui";
 import { FAQ_ITEMS } from "@/lib/mock-data";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function FAQPage() {
+  const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
@@ -16,9 +18,20 @@ export default function FAQPage() {
         {/* Hero */}
         <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Veelgestelde vragen
-            </h1>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={() => router.back()}
+                className="p-2 hover:bg-[var(--background)] rounded-lg transition-colors"
+                aria-label="Terug"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Veelgestelde vragen
+              </h1>
+            </div>
             <p className="mt-4 text-[var(--muted-foreground)] max-w-2xl mx-auto">
               Vind antwoorden op de meest gestelde vragen over Hulpwijzer.
             </p>
