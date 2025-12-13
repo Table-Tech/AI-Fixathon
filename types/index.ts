@@ -1,4 +1,18 @@
 // Common types used across the app
-// Each team member can add their types here or create separate files
+// Re-export all database types for convenience
 
 export type { Database } from "./database";
+export type {
+  Profile,
+  Regeling,
+  RegelingDetails,
+  Task,
+  Subtask,
+  TaskWithSubtasks,
+  AuditLog,
+  UserConsent,
+  ChatMessage,
+  TaskStatus,
+  RiskLevel,
+  ChatRole,
+} from "./database";
