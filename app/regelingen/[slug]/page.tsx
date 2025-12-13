@@ -19,7 +19,7 @@ export default async function RegelingDetailPage({ params }: Props) {
   const categoryLabel = CATEGORIES.find((c) => c.value === regeling.category)?.label;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header />
 
       <main className="flex-1">

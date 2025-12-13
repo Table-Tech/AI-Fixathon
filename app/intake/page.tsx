@@ -75,7 +75,7 @@ export default function IntakePage() {
   const progress = Math.min((responseIndex / 3) * 100, 100);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--muted)]">
+    <div className="min-h-screen flex flex-col bg-[var(--muted)] pb-20 md:pb-0">
       {/* Header */}
       <header className="bg-[var(--background)] border-b border-[var(--border)] sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-4">

@@ -9,7 +9,7 @@ export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header />
 
       <main className="flex-1">

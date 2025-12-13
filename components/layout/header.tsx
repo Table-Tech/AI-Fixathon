@@ -15,7 +15,7 @@ export function Header({ className }: HeaderProps) {
   return (
     <header
       className={cn(
-        "w-full border-b border-[var(--border)] bg-[var(--background)] sticky top-0 z-40",
+        "hidden md:block w-full border-b border-[var(--border)] bg-[var(--background)] sticky top-0 z-40",
         className
       )}
     >

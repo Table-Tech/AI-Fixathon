@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HoeWerktHetPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header />
 
       <main className="flex-1">

@@ -9,7 +9,7 @@ export function Footer({ className }: FooterProps) {
   return (
     <footer
       className={cn(
-        "w-full border-t border-[var(--border)] bg-[var(--muted)]",
+        "hidden md:block w-full border-t border-[var(--border)] bg-[var(--muted)]",
         className
       )}
     >
