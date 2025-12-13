@@ -1,20 +1,31 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
+  size?: "sm" | "md" | "lg";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", children, ...props }, ref) => {
+  ({ className, variant = "primary", size = "md", children, disabled, ...props }, ref) => {
     return (
       <button
         ref={ref}
+        disabled={disabled}
         className={cn(
-          "px-4 py-2 rounded-lg font-medium transition-colors",
-          variant === "primary" && "bg-foreground text-background hover:bg-foreground/90",
-          variant === "secondary" && "bg-gray-200 text-gray-900 hover:bg-gray-300",
-          variant === "outline" && "border border-foreground/20 hover:bg-foreground/5",
+          "inline-flex items-center justify-center font-medium transition-colors rounded-lg",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2",
+          "disabled:opacity-50 disabled:pointer-events-none",
+          size === "sm" && "px-3 py-1.5 text-sm",
+          size === "md" && "px-4 py-2 text-base",
+          size === "lg" && "px-6 py-3 text-lg",
+          variant === "primary" && "bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90",
+          variant === "secondary" && "bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)]/80",
+          variant === "outline" && "border border-[var(--border)] bg-transparent hover:bg-[var(--muted)]",
+          variant === "ghost" && "bg-transparent hover:bg-[var(--muted)]",
+          variant === "destructive" && "bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:bg-[var(--destructive)]/90",
           className
         )}
         {...props}

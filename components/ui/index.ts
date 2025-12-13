@@ -1,1 +1,11 @@
 export { Button } from "./button";
+export { Card, CardHeader, CardContent, CardFooter } from "./card";
+export { Input } from "./input";
+export { Textarea } from "./textarea";
+export { Badge } from "./badge";
+export { Avatar } from "./avatar";
+export { Skeleton } from "./skeleton";
+export { Progress } from "./progress";
+export { Modal } from "./modal";
+export { Select } from "./select";
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
