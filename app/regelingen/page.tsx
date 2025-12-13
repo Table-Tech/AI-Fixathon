@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 export default function RegelingenPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [showInfo, setShowInfo] = useState(false);
 
   const filteredRegelingen = useMemo(() => {
     return REGELINGEN.filter((regeling) => {
@@ -44,15 +45,25 @@ export default function RegelingenPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
+        <section className="pt-6 pb-4 md:pt-8 md:pb-6 px-4">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Alle regelingen
-            </h1>
-            <p className="mt-4 text-[var(--muted-foreground)] max-w-2xl">
-              Bekijk alle beschikbare toeslagen, uitkeringen en regelingen.
-              Gebruik de zoekfunctie of filter op categorie.
-            </p>
+            <div className="flex items-center justify-center gap-2">
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Alle regelingen
+              </h1>
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="w-6 h-6 rounded-full bg-[var(--primary)] flex items-center justify-center text-white hover:opacity-80 transition-opacity"
+              >
+                <span className="text-sm font-medium">?</span>
+              </button>
+            </div>
+            {showInfo && (
+              <p className="mt-3 text-[var(--muted-foreground)] text-sm">
+                Bekijk alle beschikbare toeslagen, uitkeringen en regelingen.
+                Gebruik de zoekfunctie of filter op categorie.
+              </p>
+            )}
           </div>
         </section>
 

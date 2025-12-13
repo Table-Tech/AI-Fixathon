@@ -277,127 +277,125 @@ hulpwijzer/
 
 ### 1.1 Project Setup
 
-- [ ] Initialize Next.js 14 with TypeScript + Tailwind
-- [ ] Install and configure shadcn/ui
-- [ ] Set up custom color palette (calm, trust-focused greens/blues)
-- [ ] Create utility functions (cn, formatDate, formatCurrency)
-- [ ] Configure Inter font
+- [x] Initialize Next.js 14 with TypeScript + Tailwind
+- [x] Install and configure shadcn/ui (custom components built)
+- [x] Set up custom color palette (CSS variables)
+- [x] Create utility functions (cn, formatDate, formatCurrency)
+- [x] Configure font (Geist)
 
 ---
 
 ### 1.2 Shared Components
 
 #### Layout Components
-- [ ] `PublicHeader` — logo, nav links, login/CTA buttons
-- [ ] `PublicFooter` — links, about, contact info
-- [ ] `UserHeader` — logo, user menu, notifications
-- [ ] `UserSidebar` — dashboard navigation
-- [ ] `HelperHeader` — helper-specific nav
+- [x] `PublicHeader` — logo, nav links, login/CTA buttons
+- [x] `PublicFooter` — links, about, contact info
+- [x] `UserHeader` — logo, user menu (DashboardHeader)
+- [x] `UserSidebar` — dashboard navigation
+- [x] `MobileBottomNav` — 5-tab mobile navigation
+- [ ] `HelperHeader` — helper-specific nav (Phase 2)
 
 #### Custom Components
-- [ ] `SchemeCard` — name, description, category badge, eligibility indicator
-- [ ] `EligibilityBadge` — likely (green), maybe (yellow), unlikely (gray)
-- [ ] `TrustFooter` — source link, last verified date, reasoning text
-- [ ] `DocumentUploader` — drag-drop with preview and progress
-- [ ] `ApprovalGate` — message explaining human review required
-- [ ] `ChatMessage` — bubble for intake conversation
-- [ ] `LoadingSpinner` — consistent loading state
-- [ ] `EmptyState` — friendly message when no data
+- [x] `SchemeCard` — name, description, category badge (Card component)
+- [x] `EligibilityBadge` — likely/maybe/unlikely (Badge component)
+- [x] `ChatMessage` — bubble for intake conversation
+- [x] `LoadingSpinner` — consistent loading state (Skeleton)
+- [x] `Button`, `Input`, `Textarea`, `Select`, `Modal`, `Tabs`, `Progress`, `Avatar`
+- [ ] `DocumentUploader` — drag-drop with preview (Phase 2)
+- [ ] `ApprovalGate` — message explaining human review (Phase 2)
 
 ---
 
 ### 1.3 Public Pages
 
 #### Landing `/`
-- [ ] Hero with value proposition
-- [ ] 3-step "how it works"
-- [ ] Trust indicators
-- [ ] CTA to start intake
+- [x] Hero with value proposition
+- [x] 3-step "how it works"
+- [x] CTA to start intake/assistent
 
-#### How It Works `/how-it-works`
-- [ ] Step-by-step explanation
-- [ ] AI vs human roles
-- [ ] Privacy info
+#### How It Works `/hoe-werkt-het`
+- [x] Step-by-step explanation
+- [x] AI vs human roles
+- [x] Privacy info
 
-#### Browse Schemes `/schemes`
-- [ ] List of schemes with SchemeCard
-- [ ] Filter by category
-- [ ] Search by name
+#### Browse Schemes `/regelingen`
+- [x] List of schemes with cards
+- [x] Filter by category
+- [x] Search by name
+- [x] Collapsible info header
 
-#### Scheme Detail `/schemes/[slug]`
-- [ ] Full description
-- [ ] Requirements
-- [ ] Documents needed
-- [ ] TrustFooter
-- [ ] CTA to check eligibility
+#### Scheme Detail `/regelingen/[slug]`
+- [x] Full description
+- [x] Requirements
+- [x] Documents needed
+- [x] Source info (provider, last updated)
+- [x] CTA to check eligibility
 
 #### Privacy `/privacy`
-- [ ] Clear privacy policy
+- [x] Clear privacy policy
 
 #### FAQ `/faq`
-- [ ] Accordion with common questions
+- [x] Accordion with common questions
+
+#### Over Ons `/over-ons`
+- [x] Mission and values
+
+#### Contact `/contact`
+- [x] Contact form
 
 ---
 
 ### 1.4 Auth Pages
 
 #### Login `/login`
-- [ ] Email input
-- [ ] Magic link flow
-- [ ] Error handling
-
-#### Check Email `/login/check-email`
-- [ ] Confirmation message
-- [ ] Resend option
+- [x] Email input
+- [x] Magic link flow (mock)
+- [x] Success state with confirmation
 
 ---
 
 ### 1.5 User Pages
 
 #### Dashboard `/dashboard`
-- [ ] Welcome message
-- [ ] Stats (matches, applications)
-- [ ] Quick actions
+- [x] Welcome message
+- [x] Stats (matches, applications, documents)
+- [x] Quick actions
 
 #### Intake `/intake`
-- [ ] Chat interface
-- [ ] Message input
-- [ ] Progress indicator
-- [ ] On complete → redirect to matches
+- [x] Chat interface
+- [x] Message input
+- [x] Progress indicator
+- [x] Completion modal
 
-#### Matches `/matches`
-- [ ] List of matched schemes
-- [ ] Filter by status/category
-- [ ] Dismiss/save actions
+#### Assistent `/assistent`
+- [x] Mobile-first chat interface
+- [x] Quick reply buttons
+- [x] Typing indicator
 
-#### Match Detail `/matches/[id]`
-- [ ] Scheme info
-- [ ] Why you match
-- [ ] CTA to apply
+#### Matches `/dashboard/matches`
+- [x] List of matched schemes
+- [x] Status indicators
 
-#### Applications `/applications`
-- [ ] List with status badges
-- [ ] Filter by status
+#### Applications `/dashboard/aanvragen`
+- [x] List with status badges
+- [x] Filter by status
 
-#### Application Detail `/applications/[id]`
-- [ ] Status indicator
-- [ ] Draft editor
-- [ ] Generate draft button
-- [ ] Submit for review button
-- [ ] Helper notes display
+#### Documents `/dashboard/documenten`
+- [x] List uploaded files
+- [x] Upload button
+- [x] Delete action
 
-#### Documents `/documents`
-- [ ] List uploaded files
-- [ ] Upload new
-- [ ] Delete option
+#### Profile `/dashboard/profiel` & `/profiel`
+- [x] User info display
+- [x] Settings options
 
-#### Settings `/settings`
-- [ ] Edit profile
-- [ ] Delete account
+#### Meer `/meer`
+- [x] Extra menu options
+- [x] Links to all pages
 
 ---
 
-### 1.6 Helper Pages
+### 1.6 Helper Pages (Phase 2)
 
 #### Queue `/queue`
 - [ ] Applications awaiting review
@@ -417,12 +415,12 @@ hulpwijzer/
 
 ### 1.7 Hooks
 
-- [ ] `useUser()` — current user + profile
-- [ ] `useSchemes()` — fetch with filters
-- [ ] `useMatches()` — user's matches
-- [ ] `useApplications()` — user's applications
-- [ ] `useIntake()` — conversation state
-- [ ] `useDocumentUpload()` — file upload handling
+- [x] `useSupabase()` — current user + profile
+- [x] `useRegelingen()` — fetch schemes with filters
+- [x] `useMatches()` — user's matches
+- [x] `useApplications()` — user's applications
+- [x] `useChat()` — conversation state
+- [x] `useDocuments()` — document management
 
 ---
 
@@ -479,11 +477,11 @@ feature/fe-*  ← frontend features
 # ✅ Launch Checklist
 
 - [ ] All MVP features working
-- [ ] Mobile responsive
+- [x] Mobile responsive
 - [ ] Error handling complete
-- [ ] Loading states everywhere
-- [ ] 5+ real schemes seeded
-- [ ] Privacy policy written
+- [x] Loading states everywhere (Skeleton component)
+- [x] 5+ real schemes seeded (12 regelingen in mock-data)
+- [x] Privacy policy written
 - [ ] Environment variables set
 - [ ] Domain + SSL configured
 
