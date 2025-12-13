@@ -18,10 +18,10 @@ export default function FAQPage() {
         {/* Hero */}
         <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-4">
+            <div className="relative flex items-center justify-center">
               <button
                 onClick={() => router.back()}
-                className="p-2 hover:bg-[var(--background)] rounded-lg transition-colors"
+                className="absolute left-0 p-2 hover:bg-[var(--background)] rounded-lg transition-colors"
                 aria-label="Terug"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

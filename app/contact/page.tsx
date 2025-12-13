@@ -2,9 +2,11 @@
 
 import { Header, Footer } from "@/components/layout";
 import { Button, Card, CardContent, Input, Textarea } from "@/components/ui";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ContactPage() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -27,9 +29,20 @@ export default function ContactPage() {
         {/* Hero */}
         <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              Contact
-            </h1>
+            <div className="relative flex items-center justify-center">
+              <button
+                onClick={() => router.back()}
+                className="absolute left-0 p-2 hover:bg-[var(--background)] rounded-lg transition-colors"
+                aria-label="Terug"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Contact
+              </h1>
+            </div>
             <p className="mt-4 text-[var(--muted-foreground)] max-w-2xl mx-auto">
               Heb je een vraag of wil je meer weten over Hulpwijzer? Neem
               contact met ons op.

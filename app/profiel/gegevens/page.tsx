@@ -174,8 +174,8 @@ export default function GegevensPage() {
     <div className="min-h-screen pb-20 md:pb-0">
       <div className="px-4 py-6 max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Link href="/profiel" className="p-2 -ml-2 hover:bg-[var(--muted)] rounded-lg">
+        <div className="relative flex items-center justify-center mb-6">
+          <Link href="/profiel" className="absolute left-0 p-2 hover:bg-[var(--muted)] rounded-lg">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
