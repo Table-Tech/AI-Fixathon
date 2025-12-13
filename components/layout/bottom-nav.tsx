@@ -64,8 +64,8 @@ const navItems = [
     ),
   },
   {
-    href: "/meer",
-    label: "Meer",
+    href: "/taken",
+    label: "Taken",
     icon: (active: boolean) => (
       <svg
         className={cn("w-6 h-6", active ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]")}
@@ -77,7 +77,7 @@ const navItems = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={active ? 0 : 1.5}
-          d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
     ),
