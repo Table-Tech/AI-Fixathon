@@ -254,13 +254,31 @@ export default function GegevensPage() {
                   </div>
                 )}
 
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_single_parent}
-                    onChange={(e) => setFormData({ ...formData, is_single_parent: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border)]"
-                  />
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_single_parent}
+                      onChange={(e) => setFormData({ ...formData, is_single_parent: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                      formData.is_single_parent
+                        ? "bg-[var(--primary)] border-[var(--primary)]"
+                        : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                    }`}>
+                      <svg
+                        className={`w-3 h-3 text-white transition-all duration-200 ${
+                          formData.is_single_parent ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
                   <span>Ik ben alleenstaande ouder</span>
                 </label>
               </div>
@@ -286,23 +304,59 @@ export default function GegevensPage() {
                   onChange={(e) => setFormData({ ...formData, employment_status: e.target.value as EmploymentStatus })}
                 />
 
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.has_debts}
-                    onChange={(e) => setFormData({ ...formData, has_debts: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border)]"
-                  />
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formData.has_debts}
+                      onChange={(e) => setFormData({ ...formData, has_debts: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                      formData.has_debts
+                        ? "bg-[var(--primary)] border-[var(--primary)]"
+                        : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                    }`}>
+                      <svg
+                        className={`w-3 h-3 text-white transition-all duration-200 ${
+                          formData.has_debts ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
                   <span>Ik heb problematische schulden</span>
                 </label>
 
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.savings_under_limit}
-                    onChange={(e) => setFormData({ ...formData, savings_under_limit: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border)]"
-                  />
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formData.savings_under_limit}
+                      onChange={(e) => setFormData({ ...formData, savings_under_limit: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                      formData.savings_under_limit
+                        ? "bg-[var(--primary)] border-[var(--primary)]"
+                        : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                    }`}>
+                      <svg
+                        className={`w-3 h-3 text-white transition-all duration-200 ${
+                          formData.savings_under_limit ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
                   <span>Mijn spaargeld is onder de vermogensgrens</span>
                 </label>
               </div>
@@ -340,23 +394,59 @@ export default function GegevensPage() {
             <CardContent className="pt-6">
               <h2 className="text-lg font-semibold mb-4">Overig</h2>
               <div className="space-y-4">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.has_dutch_residence}
-                    onChange={(e) => setFormData({ ...formData, has_dutch_residence: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border)]"
-                  />
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formData.has_dutch_residence}
+                      onChange={(e) => setFormData({ ...formData, has_dutch_residence: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                      formData.has_dutch_residence
+                        ? "bg-[var(--primary)] border-[var(--primary)]"
+                        : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                    }`}>
+                      <svg
+                        className={`w-3 h-3 text-white transition-all duration-200 ${
+                          formData.has_dutch_residence ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
                   <span>Ik heb een geldige verblijfsvergunning</span>
                 </label>
 
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.has_health_insurance}
-                    onChange={(e) => setFormData({ ...formData, has_health_insurance: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border)]"
-                  />
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formData.has_health_insurance}
+                      onChange={(e) => setFormData({ ...formData, has_health_insurance: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                      formData.has_health_insurance
+                        ? "bg-[var(--primary)] border-[var(--primary)]"
+                        : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                    }`}>
+                      <svg
+                        className={`w-3 h-3 text-white transition-all duration-200 ${
+                          formData.has_health_insurance ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  </div>
                   <span>Ik heb een Nederlandse zorgverzekering</span>
                 </label>
               </div>

@@ -12,14 +12,18 @@ export default function TakenPage() {
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
   const [modalError, setModalError] = useState<string | null>(null);
+  const [unrelatedMessage, setUnrelatedMessage] = useState<string | null>(null);
 
   const handleCreateTask = async () => {
     if (!message.trim()) return;
 
     setModalError(null);
+    setUnrelatedMessage(null);
     const result = await createTaskFromAI(message.trim());
 
-    if (result) {
+    if (result.unrelated) {
+      setUnrelatedMessage(result.unrelatedMessage || "Dit lijkt niet gerelateerd aan financiële hulp of regelingen.");
+    } else if (result.task) {
       setMessage("");
       setShowModal(false);
     } else {
@@ -397,7 +401,11 @@ export default function TakenPage() {
               </label>
               <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  setUnrelatedMessage(null);
+                  setModalError(null);
+                }}
                 placeholder="Bijv: Ik wil huurtoeslag aanvragen"
                 className="w-full h-32 px-3 py-2 border border-[var(--border)] rounded-lg bg-[var(--background)] resize-none focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 disabled={isCreating}
@@ -407,6 +415,21 @@ export default function TakenPage() {
             {/* Error */}
             {modalError && (
               <p className="text-sm text-red-500 mb-4">{modalError}</p>
+            )}
+
+            {/* Unrelated message */}
+            {unrelatedMessage && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-medium text-orange-800">Niet gerelateerd</p>
+                    <p className="text-sm text-orange-700">{unrelatedMessage}</p>
+                  </div>
+                </div>
+              </div>
             )}
 
             {/* Actions */}

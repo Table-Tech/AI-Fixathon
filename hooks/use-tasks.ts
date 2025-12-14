@@ -8,12 +8,18 @@ export interface TaskWithSubtasks extends Task {
   subtasks: Subtask[];
 }
 
+interface CreateTaskResult {
+  task: TaskWithSubtasks | null;
+  unrelated?: boolean;
+  unrelatedMessage?: string;
+}
+
 interface UseTasksReturn {
   tasks: TaskWithSubtasks[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  createTaskFromAI: (message: string) => Promise<TaskWithSubtasks | null>;
+  createTaskFromAI: (message: string) => Promise<CreateTaskResult>;
   toggleSubtask: (subtaskId: string, isDone: boolean) => Promise<void>;
   updateTaskStatus: (taskId: string, status: Task["status"]) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
@@ -66,7 +72,7 @@ export function useTasks(): UseTasksReturn {
   }, []);
 
   // Create task from AI message
-  const createTaskFromAI = async (message: string): Promise<TaskWithSubtasks | null> => {
+  const createTaskFromAI = async (message: string): Promise<CreateTaskResult> => {
     try {
       setIsCreating(true);
       setError(null);
@@ -74,7 +80,7 @@ export function useTasks(): UseTasksReturn {
       const token = await getAuthToken();
       if (!token) {
         setError("Je moet ingelogd zijn");
-        return null;
+        return { task: null };
       }
 
       const response = await fetch("/api/tasks/from-ai", {
@@ -92,16 +98,25 @@ export function useTasks(): UseTasksReturn {
         throw new Error(result.error || "Kon taak niet aanmaken");
       }
 
+      // Check if AI flagged this as unrelated
+      if (result.unrelated) {
+        return {
+          task: null,
+          unrelated: true,
+          unrelatedMessage: result.message,
+        };
+      }
+
       // Add new task to the list
       const newTask = result.data as TaskWithSubtasks;
       setTasks((prev) => [newTask, ...prev]);
 
-      return newTask;
+      return { task: newTask };
     } catch (err) {
       console.error("Error creating task from AI:", err);
       const errorMessage = err instanceof Error ? err.message : "Er ging iets mis";
       setError(errorMessage);
-      return null;
+      return { task: null };
     } finally {
       setIsCreating(false);
     }

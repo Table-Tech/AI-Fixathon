@@ -13,12 +13,23 @@ interface AITaskResponse {
   status?: string;
   deadline?: string | null;
   subtasks?: Array<{ title: string; order: number }>;
+  unrelated?: boolean;
+  message?: string;
 }
 
 function validateAIResponse(data: unknown): AITaskResponse | null {
   if (!data || typeof data !== "object") return null;
 
   const obj = data as Record<string, unknown>;
+
+  // Check if AI flagged this as unrelated (check for boolean true or string "true")
+  if (obj.unrelated === true || obj.unrelated === "true") {
+    return {
+      title: "",
+      unrelated: true,
+      message: typeof obj.message === "string" ? obj.message : "Dit lijkt niet gerelateerd aan financiële hulp of regelingen.",
+    };
+  }
 
   if (typeof obj.title !== "string" || obj.title.trim() === "") {
     return null;
@@ -145,8 +156,10 @@ export async function POST(request: Request) {
             console.log("📥 Double-parsed JSON:", parsed);
           }
 
+          console.log("🔍 Checking unrelated field:", parsed.unrelated, typeof parsed.unrelated);
           aiResponse = validateAIResponse(parsed);
           console.log("✅ Validated AI response:", aiResponse);
+          console.log("🔍 Is unrelated?:", aiResponse?.unrelated);
         } catch (parseError) {
           console.error("❌ Failed to parse AI response:", parseError);
         }
@@ -158,14 +171,23 @@ export async function POST(request: Request) {
       // Continue with fallback
     }
 
-    // Fallback: if Activepieces returns empty/invalid, create a basic task
-    if (!aiResponse) {
-      aiResponse = {
-        title: message.trim().slice(0, 100),
-        description: "Taak aangemaakt vanuit je bericht",
-        status: "pending",
-        subtasks: [],
-      };
+    // Check if AI flagged this as unrelated
+    if (aiResponse?.unrelated) {
+      console.log("🚫 Returning unrelated response");
+      return NextResponse.json({
+        unrelated: true,
+        message: aiResponse.message || "Dit lijkt niet gerelateerd aan financiële hulp of regelingen.",
+      }, { status: 200 });
+    }
+
+    // Fallback: if Activepieces returns empty/invalid, DON'T create a basic task
+    // Instead, return an error so user knows something went wrong
+    if (!aiResponse || !aiResponse.title) {
+      console.log("⚠️ No valid AI response, returning error");
+      return NextResponse.json({
+        unrelated: true,
+        message: "Ik kon je verzoek niet verwerken. Probeer een duidelijkere beschrijving van je taak, bijvoorbeeld: 'Ik wil huurtoeslag aanvragen'.",
+      }, { status: 200 });
     }
 
     // Use service role client for database operations
