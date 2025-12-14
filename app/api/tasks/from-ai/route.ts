@@ -11,6 +11,7 @@ interface AITaskResponse {
   description?: string;
   regeling_id?: string | null;
   status?: string;
+  deadline?: string | null;
   subtasks?: Array<{ title: string; order: number }>;
 }
 
@@ -23,11 +24,21 @@ function validateAIResponse(data: unknown): AITaskResponse | null {
     return null;
   }
 
+  // Validate deadline if provided
+  let deadline: string | null = null;
+  if (typeof obj.deadline === "string" && obj.deadline.trim() !== "") {
+    const parsedDate = new Date(obj.deadline);
+    if (!isNaN(parsedDate.getTime())) {
+      deadline = parsedDate.toISOString();
+    }
+  }
+
   const validated: AITaskResponse = {
     title: obj.title.trim(),
     description: typeof obj.description === "string" ? obj.description : undefined,
     regeling_id: typeof obj.regeling_id === "string" ? obj.regeling_id : null,
     status: "pending",
+    deadline,
     subtasks: [],
   };
 
@@ -169,6 +180,7 @@ export async function POST(request: Request) {
         description: aiResponse.description || null,
         regeling_id: aiResponse.regeling_id || null,
         status: "pending",
+        deadline: aiResponse.deadline || null,
       })
       .select()
       .single();

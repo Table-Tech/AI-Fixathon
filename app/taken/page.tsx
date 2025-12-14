@@ -30,6 +30,27 @@ export default function TakenPage() {
   const completedCount = (subtasks: { is_done: boolean }[]) =>
     subtasks.filter((st) => st.is_done).length;
 
+  // Deadline helpers
+  const getDeadlineStatus = (deadline: string | null) => {
+    if (!deadline) return null;
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const daysLeft = Math.ceil((deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (daysLeft < 0) return { label: "Verlopen", color: "bg-red-100 text-red-800", urgent: true };
+    if (daysLeft === 0) return { label: "Vandaag", color: "bg-red-100 text-red-800", urgent: true };
+    if (daysLeft <= 3) return { label: `${daysLeft} dagen`, color: "bg-orange-100 text-orange-800", urgent: true };
+    if (daysLeft <= 7) return { label: `${daysLeft} dagen`, color: "bg-yellow-100 text-yellow-800", urgent: false };
+    return { label: formatDeadline(deadline), color: "bg-gray-100 text-gray-800", urgent: false };
+  };
+
+  const formatDeadline = (deadline: string) => {
+    return new Date(deadline).toLocaleDateString("nl-NL", {
+      day: "numeric",
+      month: "short",
+    });
+  };
+
   // Loading state
   if (authLoading || isLoading) {
     return (
@@ -89,6 +110,32 @@ export default function TakenPage() {
           </p>
         </div>
 
+        {/* Deadline Alert Banner */}
+        {(() => {
+          const urgentTasks = tasks.filter((t) => {
+            if (!t.deadline || t.status === "completed") return false;
+            const status = getDeadlineStatus(t.deadline);
+            return status?.urgent;
+          });
+
+          if (urgentTasks.length === 0) return null;
+
+          return (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center gap-2 text-red-800">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span className="font-medium">
+                  {urgentTasks.length === 1
+                    ? "1 taak heeft een dringende deadline"
+                    : `${urgentTasks.length} taken hebben dringende deadlines`}
+                </span>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* New Task Button */}
         <Button
           onClick={() => setShowModal(true)}
@@ -117,13 +164,28 @@ export default function TakenPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {tasks.map((task) => (
+            {tasks.map((task) => {
+              console.log("Task data:", task.title, "deadline:", task.deadline);
+              return (
               <Card key={task.id}>
                 <CardContent className="pt-4 pb-4">
                   {/* Task Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-semibold">{task.title}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold">{task.title}</h3>
+                        {task.deadline && (() => {
+                          const status = getDeadlineStatus(task.deadline);
+                          return status ? (
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${status.color}`}>
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {status.label}
+                            </span>
+                          ) : null;
+                        })()}
+                      </div>
                       {task.description && (
                         <p className="text-sm text-[var(--muted-foreground)] mt-1">
                           {task.description}
@@ -209,7 +271,8 @@ export default function TakenPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            );
+            })}
           </div>
         )}
       </div>
