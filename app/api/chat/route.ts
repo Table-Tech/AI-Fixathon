@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 interface ChatMessage {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
@@ -127,25 +127,45 @@ export async function POST(request: NextRequest) {
 
     // Build user context from profile (for personalized responses)
     const userContext = buildUserContext(user_profile);
-    const contextString = userContext
-      ? `\n\nBekende gegevens van deze gebruiker: ${userContext}. Gebruik deze informatie om relevante toeslagen aan te bevelen. Vraag alleen naar ontbrekende info als dat nodig is voor je advies.`
-      : "\n\nGeen profielgegevens bekend. Vraag vriendelijk naar de situatie van de gebruiker om goed te kunnen helpen.";
 
-    // Build messages array for the API (no system prompt - GreenPT doesn't support it)
+    // GreenPT doesn't support system messages, so we use a roleplay-style approach
+    // First, add a "setup" exchange that establishes the AI's role and user's context
     const isFirstMessage = conversation_history.length === 0;
-    const userContent = isFirstMessage
-      ? ASSISTANT_INSTRUCTIONS + contextString + "\n\n" + cleanedMessage
-      : cleanedMessage;
 
-    const messages: ChatMessage[] = [
-      ...conversation_history.map((m) => ({
-        role: m.role as "user" | "assistant",
-        content: stripPII(m.content),
-      })),
-      { role: "user", content: userContent },
-    ];
+    const messages: ChatMessage[] = [];
 
-    console.log("Calling GreenPT with", messages.length, "messages");
+    if (isFirstMessage) {
+      // Setup message: tell AI who it is and who the user is
+      let setupPrompt = `Jij bent Hulpwijzer, een vriendelijke assistent die alleenstaande moeders in Nederland helpt met toeslagen en regelingen. Spreek simpel Nederlands. Houd antwoorden kort (2-3 zinnen).`;
+
+      if (userContext) {
+        setupPrompt += `\n\nDeze gebruiker is: ${userContext}. Begin je antwoord met het bevestigen dat je deze situatie kent, bijvoorbeeld: "Ik zie dat je..." en geef dan direct relevant advies.`;
+      }
+
+      setupPrompt += `\n\nDe gebruiker vraagt: ${cleanedMessage}`;
+
+      messages.push({ role: "user", content: setupPrompt });
+    } else {
+      // For follow-up messages, include history and add context reminder
+      for (const m of conversation_history) {
+        messages.push({
+          role: m.role as "user" | "assistant",
+          content: stripPII(m.content),
+        });
+      }
+
+      // Add the new message with a subtle context reminder
+      const userContent = userContext
+        ? `(Context: ${userContext})\n\n${cleanedMessage}`
+        : cleanedMessage;
+      messages.push({ role: "user", content: userContent });
+    }
+
+    console.log("=== GREENPT API CALL ===");
+    console.log("User context:", userContext);
+    console.log("Is first message:", isFirstMessage);
+    console.log("Total messages:", messages.length);
+    console.log("Full first message:", messages[0]?.content);
 
     const response = await fetch(apiUrl, {
       method: "POST",

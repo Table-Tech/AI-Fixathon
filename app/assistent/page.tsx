@@ -241,6 +241,10 @@ export default function AssistentPage() {
       }));
 
       // Call AI API
+      console.log("=== SENDING TO AI ===");
+      console.log("User profile being sent:", userProfile);
+      console.log("=====================");
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
