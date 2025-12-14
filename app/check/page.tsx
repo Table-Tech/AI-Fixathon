@@ -103,7 +103,7 @@ export default function CheckPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--background)]">
+    <div className="min-h-screen flex flex-col bg-[var(--background)] pb-20 md:pb-0">
       <Header />
 
       <main className="flex-1">

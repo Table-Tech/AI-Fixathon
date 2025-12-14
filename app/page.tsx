@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -8,9 +9,13 @@ export default function Home() {
       <header className="hidden md:block w-full border-b border-[var(--border)] bg-[var(--background)]">
         <nav className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">HW</span>
-            </div>
+            <Image
+              src="/care.png"
+              alt="Hulpwijzer"
+              width={32}
+              height={32}
+              style={{ filter: 'brightness(0) saturate(100%) invert(37%) sepia(93%) saturate(1352%) hue-rotate(213deg) brightness(93%) contrast(91%)' }}
+            />
             <span className="text-xl font-bold">Hulpwijzer</span>
           </Link>
           <Link href="/login">
@@ -19,14 +24,21 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="flex-1 flex flex-col px-6 py-12 md:py-20">
+      <main className="flex-1 flex flex-col px-6 py-8 md:py-12">
         <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-between">
           {/* Hero sectie */}
-          <div className="flex-1 flex flex-col justify-center">
-            {/* Logo for mobile */}
-            <div className="md:hidden mb-6 text-center">
-              <div className="w-16 h-16 bg-[var(--primary)] rounded-2xl flex items-center justify-center mx-auto">
-                <span className="text-white font-bold text-2xl">HW</span>
+          <div className="flex-1 flex flex-col justify-center items-center">
+            {/* Care illustration */}
+            <div className="mb-6 md:mb-8">
+              <div className="relative w-28 h-28 md:w-36 md:h-36">
+                <Image
+                  src="/care.png"
+                  alt="Moeder met kind"
+                  fill
+                  className="object-contain"
+                  style={{ filter: 'brightness(0) saturate(100%) invert(37%) sepia(93%) saturate(1352%) hue-rotate(213deg) brightness(93%) contrast(91%)' }}
+                  priority
+                />
               </div>
             </div>
 
@@ -35,8 +47,8 @@ export default function Home() {
               <span className="text-[var(--primary)]">toeslagen</span>?
             </h1>
 
-            <p className="mt-4 text-center text-[var(--muted-foreground)]">
-              Wij helpen je door het gehele proces.
+            <p className="mt-4 text-center text-[var(--muted-foreground)] max-w-md">
+              Wij helpen alleenstaande moeders door het gehele proces.
             </p>
           </div>
 
