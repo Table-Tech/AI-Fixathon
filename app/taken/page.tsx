@@ -185,10 +185,10 @@ export default function TakenPage() {
             </CardContent>
           </Card>
         ) : (
+          <>
+          {/* Active Tasks */}
           <div className="space-y-4">
-            {tasks.map((task) => {
-              console.log("Task data:", task.title, "deadline:", task.deadline);
-              return (
+            {tasks.filter(t => t.status !== "completed").map((task) => (
               <Card key={task.id}>
                 <CardContent className="pt-4 pb-4">
                   {/* Task Header */}
@@ -216,7 +216,7 @@ export default function TakenPage() {
                     </div>
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1 hover:bg-[var(--muted)] rounded text-[var(--muted-foreground)] hover:text-red-500 transition-colors"
+                      className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       title="Verwijderen"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,17 +247,17 @@ export default function TakenPage() {
 
                   {/* Subtasks */}
                   {task.subtasks.length > 0 && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {task.subtasks.map((subtask) => (
                         <label
                           key={subtask.id}
-                          className="flex items-start gap-3 cursor-pointer group"
+                          className="flex items-start gap-3 cursor-pointer group py-1"
                         >
                           <input
                             type="checkbox"
                             checked={subtask.is_done}
                             onChange={(e) => toggleSubtask(subtask.id, e.target.checked)}
-                            className="mt-0.5 w-5 h-5 rounded border-[var(--border)] cursor-pointer"
+                            className="mt-0.5 w-5 h-5 min-w-5 min-h-5 flex-shrink-0 rounded border-[var(--border)] cursor-pointer"
                           />
                           <span
                             className={`text-sm ${
@@ -273,29 +273,67 @@ export default function TakenPage() {
                     </div>
                   )}
 
-                  {/* Status Badge */}
-                  <div className="mt-3 pt-3 border-t border-[var(--border)]">
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        task.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : task.status === "in_progress"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {task.status === "completed"
-                        ? "Voltooid"
-                        : task.status === "in_progress"
-                        ? "Bezig"
-                        : "Open"}
-                    </span>
+                  {/* Complete Button */}
+                  <div className="mt-3 pt-3 border-t border-[var(--border)] flex items-center justify-end">
+                    {task.status !== "completed" && (
+                      <button
+                        onClick={() => updateTaskStatus(task.id, "completed")}
+                        disabled={task.subtasks.length > 0 && completedCount(task.subtasks) < task.subtasks.length}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-[var(--primary)] hover:bg-[var(--primary)]/90 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Markeren als voltooid
+                      </button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
-            );
-            })}
+            ))}
           </div>
+
+          {/* Completed Tasks */}
+          {tasks.filter(t => t.status === "completed").length > 0 && (
+            <div className="mt-8">
+              <details className="group">
+                <summary className="flex items-center gap-2 cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-3">
+                  <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  <span className="text-sm font-medium">
+                    Voltooide taken ({tasks.filter(t => t.status === "completed").length})
+                  </span>
+                </summary>
+                <div className="space-y-3">
+                  {tasks.filter(t => t.status === "completed").map((task) => (
+                    <Card key={task.id} className="opacity-60">
+                      <CardContent className="py-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="line-through text-[var(--muted-foreground)]">{task.title}</span>
+                          </div>
+                          <button
+                            onClick={() => deleteTask(task.id)}
+                            className="p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                            title="Verwijderen"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </details>
+            </div>
+          )}
+          </>
         )}
       </div>
 
