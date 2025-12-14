@@ -120,6 +120,7 @@ export type Database = {
           title: string;
           description: string | null;
           status: TaskStatus;
+          deadline: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -130,6 +131,7 @@ export type Database = {
           title: string;
           description?: string | null;
           status?: TaskStatus;
+          deadline?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -140,6 +142,7 @@ export type Database = {
           title?: string;
           description?: string | null;
           status?: TaskStatus;
+          deadline?: string | null;
           created_at?: string;
           updated_at?: string;
         };
