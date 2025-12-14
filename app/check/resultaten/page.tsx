@@ -78,7 +78,7 @@ export default function ResultatenPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[var(--background)] to-[var(--muted)]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[var(--background)] to-[var(--muted)] pb-20 md:pb-0">
       <Header />
 
       <main className="flex-1 px-4 py-8 md:py-12">

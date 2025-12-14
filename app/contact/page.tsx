@@ -2,6 +2,7 @@
 
 import { Header, Footer } from "@/components/layout";
 import { Button, Card, CardContent, Input, Textarea } from "@/components/ui";
+import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -9,16 +10,40 @@ export default function ContactPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const { error: submitError } = await supabase
+        .from("contact_requests")
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          status: "nieuw",
+        });
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+      if (submitError) throw submitError;
+
+      setIsSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      console.error("Error submitting contact form:", err);
+      setError("Er is iets misgegaan. Probeer het later opnieuw.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,24 +91,37 @@ export default function ContactPage() {
                         <Input
                           label="Naam"
                           placeholder="Je naam"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
                         />
                         <Input
                           label="E-mailadres"
                           type="email"
                           placeholder="je@email.nl"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
                         />
                         <Input
                           label="Onderwerp"
                           placeholder="Waar gaat je bericht over?"
+                          value={formData.subject}
+                          onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                           required
                         />
                         <Textarea
                           label="Bericht"
                           placeholder="Typ je bericht hier..."
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                           required
                         />
+                        {error && (
+                          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                            {error}
+                          </div>
+                        )}
                         <Button
                           type="submit"
                           className="w-full"
