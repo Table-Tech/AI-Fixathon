@@ -14,6 +14,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
   });
@@ -29,6 +30,7 @@ export default function ContactPage() {
         .insert({
           name: formData.name,
           email: formData.email,
+          phone: formData.phone || null,
           subject: formData.subject,
           message: formData.message,
           status: "nieuw",
@@ -37,7 +39,7 @@ export default function ContactPage() {
       if (submitError) throw submitError;
 
       setIsSubmitted(true);
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
       console.error("Error submitting contact form:", err);
       setError("Er is iets misgegaan. Probeer het later opnieuw.");
@@ -102,6 +104,13 @@ export default function ContactPage() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
+                        />
+                        <Input
+                          label="Telefoonnummer (optioneel)"
+                          type="tel"
+                          placeholder="06 12345678"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         />
                         <Input
                           label="Onderwerp"
