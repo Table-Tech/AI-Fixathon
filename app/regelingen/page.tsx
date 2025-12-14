@@ -38,6 +38,43 @@ export default function RegelingenPage() {
       <Header />
 
       <main className="flex-1">
+        {/* Scanner CTA Banner */}
+        <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary)]/80 text-white">
+          <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="hidden md:flex items-center justify-center w-14 h-14 rounded-full bg-white/20 flex-shrink-0">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold mb-1">
+                    Ontdek waar jij recht op hebt
+                  </h2>
+                  <p className="text-white/90 text-sm md:text-base">
+                    Beantwoord 5 simpele vragen en zie direct welke regelingen bij jou passen.
+                    Volledig anoniem en binnen 2 minuten klaar.
+                  </p>
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <Link href="/scanner">
+                  <Button
+                    size="lg"
+                    className="w-full md:w-auto bg-white text-[var(--primary)] hover:bg-white/90 font-semibold shadow-lg"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Start de Scanner
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Hero */}
         <section className="pt-6 pb-4 md:pt-8 md:pb-6 px-4">
           <div className="max-w-7xl mx-auto">
@@ -168,18 +205,22 @@ export default function RegelingenPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-12 md:py-16 px-4">
+        <section className="py-12 md:py-16 px-4 bg-[var(--muted)]/30">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-bold">
               Niet zeker waar je recht op hebt?
             </h2>
             <p className="mt-4 text-[var(--muted-foreground)]">
-              Start de intake en we helpen je ontdekken welke regelingen bij
-              jouw situatie passen.
+              Gebruik onze gratis scanner en ontdek binnen 2 minuten welke regelingen bij jouw situatie passen.
             </p>
             <div className="mt-6">
-              <Link href="/intake">
-                <Button size="lg">Start de intake</Button>
+              <Link href="/scanner">
+                <Button size="lg">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Start de Scanner
+                </Button>
               </Link>
             </div>
           </div>

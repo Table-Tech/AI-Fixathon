@@ -46,7 +46,8 @@ export async function PATCH(
     const { title, is_done, order } = body;
 
     // First verify the subtask belongs to a task owned by this user
-    const { data: subtask, error: checkError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: subtaskData, error: checkError } = await (supabase as any)
       .from("subtasks")
       .select(`
         id,
@@ -56,6 +57,8 @@ export async function PATCH(
       .eq("id", id)
       .single();
 
+    const subtask = subtaskData as { id: string; task_id: string; task: { user_id: string } } | null;
+
     if (checkError || !subtask) {
       return NextResponse.json(
         { error: "Subtask not found" },
@@ -64,7 +67,7 @@ export async function PATCH(
     }
 
     // Check ownership
-    const taskData = subtask.task as unknown as { user_id: string };
+    const taskData = subtask.task;
     if (taskData.user_id !== user.id) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -85,7 +88,8 @@ export async function PATCH(
       );
     }
 
-    const { data: updatedSubtask, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: updatedSubtask, error } = await (supabase as any)
       .from("subtasks")
       .update(updates)
       .eq("id", id)
@@ -141,7 +145,8 @@ export async function DELETE(
     const { user, supabase } = auth;
 
     // First verify the subtask belongs to a task owned by this user
-    const { data: subtask, error: checkError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: subtaskData2, error: checkError } = await (supabase as any)
       .from("subtasks")
       .select(`
         id,
@@ -149,6 +154,8 @@ export async function DELETE(
       `)
       .eq("id", id)
       .single();
+
+    const subtask = subtaskData2 as { id: string; task: { user_id: string } } | null;
 
     if (checkError || !subtask) {
       return NextResponse.json(
@@ -158,7 +165,7 @@ export async function DELETE(
     }
 
     // Check ownership
-    const taskData = subtask.task as unknown as { user_id: string };
+    const taskData = subtask.task;
     if (taskData.user_id !== user.id) {
       return NextResponse.json(
         { error: "Unauthorized" },

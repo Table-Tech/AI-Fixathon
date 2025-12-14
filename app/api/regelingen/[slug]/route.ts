@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { logAudit, AuditActions } from "@/lib/audit";
+import type { Regeling } from "@/types";
 
 // GET /api/regelingen/[slug] - Get single regeling by slug
 export async function GET(
@@ -11,15 +12,17 @@ export async function GET(
     const { slug } = await params;
     const supabase = createServerClient();
 
-    const { data, error } = await supabase
+    const { data: regelingData, error } = await supabase
       .from("regelingen")
       .select("*")
       .eq("slug", slug)
       .eq("is_active", true)
       .single();
 
-    if (error) {
-      if (error.code === "PGRST116") {
+    const data = regelingData as Regeling | null;
+
+    if (error || !data) {
+      if (error?.code === "PGRST116" || !data) {
         return NextResponse.json(
           { error: "Regeling not found" },
           { status: 404 }

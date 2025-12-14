@@ -1,4 +1,5 @@
 import { Header, Footer } from "@/components/layout";
+import Link from "next/link";
 
 export default function PrivacyPage() {
   return (
@@ -9,6 +10,17 @@ export default function PrivacyPage() {
         {/* Hero */}
         <section className="py-12 md:py-16 px-4 bg-[var(--muted)]">
           <div className="max-w-4xl mx-auto">
+            {/* Back link */}
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-6 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Terug naar home
+            </Link>
+
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
               Privacybeleid
             </h1>

@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Card, CardContent, CardHeader, Input, Textarea, Avatar, Progress } from "@/components/ui";
+import { Button, Card, CardContent, CardHeader, Input, Avatar, Progress } from "@/components/ui";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ProfielPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,6 +21,17 @@ export default function ProfielPage() {
   return (
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-4xl mx-auto">
+        {/* Back link */}
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-4 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Terug naar dashboard
+        </Link>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold">Mijn profiel</h1>

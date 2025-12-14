@@ -295,17 +295,16 @@ export default function RegelingDetailPage() {
                 {/* CTA */}
                 <Card className="bg-[var(--primary)] text-white border-0">
                   <CardContent className="pt-6">
-                    <h3 className="font-semibold mb-2">Kom je in aanmerking?</h3>
+                    <h3 className="font-semibold mb-2">Hulp nodig?</h3>
                     <p className="text-white/80 text-sm mb-4">
-                      Start de intake om te ontdekken of deze regeling bij jouw
-                      situatie past.
+                      Vraag onze assistent of deze regeling bij jouw situatie past.
                     </p>
-                    <Link href="/intake">
+                    <Link href="/assistent">
                       <Button
                         variant="secondary"
                         className="w-full bg-white text-[var(--primary)] hover:bg-white/90"
                       >
-                        Start de intake
+                        Chat met assistent
                       </Button>
                     </Link>
                   </CardContent>

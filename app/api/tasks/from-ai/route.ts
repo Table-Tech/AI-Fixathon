@@ -161,7 +161,8 @@ export async function POST(request: Request) {
     const supabase = createServerClient();
 
     // Create the task
-    const { data: task, error: taskError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: task, error: taskError } = await (supabase as any)
       .from("tasks")
       .insert({
         user_id: user.id,
@@ -190,14 +191,16 @@ export async function POST(request: Request) {
         is_done: false,
       }));
 
-      const { error: subtasksError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: subtasksError } = await (supabase as any)
         .from("subtasks")
         .insert(subtasksToInsert);
 
       if (subtasksError) {
         console.error("Error creating subtasks:", subtasksError);
         // If subtasks fail, delete the task (rollback)
-        await supabase.from("tasks").delete().eq("id", task.id);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase as any).from("tasks").delete().eq("id", task.id);
         return NextResponse.json(
           { error: "Kon subtaken niet aanmaken" },
           { status: 500 }
@@ -220,7 +223,8 @@ export async function POST(request: Request) {
     });
 
     // Fetch the complete task with subtasks
-    const { data: completeTask, error: fetchError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: completeTask, error: fetchError } = await (supabase as any)
       .from("tasks")
       .select(`
         *,

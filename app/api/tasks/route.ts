@@ -40,7 +40,8 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
 
-    let query = supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let query = (supabase as any)
       .from("tasks")
       .select(`
         *,
@@ -65,7 +66,8 @@ export async function GET(request: Request) {
     }
 
     // Sort subtasks by order
-    const tasksWithSortedSubtasks = data?.map((task) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tasksWithSortedSubtasks = data?.map((task: any) => ({
       ...task,
       subtasks: task.subtasks?.sort((a: { order: number }, b: { order: number }) => a.order - b.order) || [],
     }));
@@ -105,7 +107,8 @@ export async function POST(request: Request) {
     }
 
     // Create the task
-    const { data: task, error: taskError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: task, error: taskError } = await (supabase as any)
       .from("tasks")
       .insert({
         user_id: user.id,
@@ -134,7 +137,8 @@ export async function POST(request: Request) {
         is_done: false,
       }));
 
-      const { error: subtasksError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: subtasksError } = await (supabase as any)
         .from("subtasks")
         .insert(subtasksToInsert);
 
@@ -155,7 +159,8 @@ export async function POST(request: Request) {
     });
 
     // Fetch the complete task with subtasks
-    const { data: completeTask } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: completeTask } = await (supabase as any)
       .from("tasks")
       .select(`
         *,

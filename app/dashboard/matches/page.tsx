@@ -30,6 +30,17 @@ export default function MatchesPage() {
   return (
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
+        {/* Back link */}
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-4 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Terug naar dashboard
+        </Link>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold">Jouw matches</h1>
@@ -168,7 +179,7 @@ export default function MatchesPage() {
                   Werk je profiel bij om meer passende regelingen te ontdekken.
                 </p>
               </div>
-              <Link href="/dashboard/intake">
+              <Link href="/profiel/gegevens">
                 <Button>Profiel bijwerken</Button>
               </Link>
             </div>

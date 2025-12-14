@@ -58,8 +58,8 @@ export function Header({ className }: HeaderProps) {
             <Link href="/login">
               <Button variant="ghost">Inloggen</Button>
             </Link>
-            <Link href="/intake">
-              <Button>Start intake</Button>
+            <Link href="/assistent">
+              <Button>Chat met assistent</Button>
             </Link>
           </div>
 
@@ -131,8 +131,8 @@ export function Header({ className }: HeaderProps) {
                   Inloggen
                 </Button>
               </Link>
-              <Link href="/intake" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full">Start intake</Button>
+              <Link href="/assistent" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full">Chat met assistent</Button>
               </Link>
             </div>
           </div>

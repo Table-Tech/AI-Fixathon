@@ -34,15 +34,79 @@ function stripPII(text: string): string {
   return cleaned;
 }
 
-// Instructions for the assistant (prepended to first message since GreenPT doesn't support system prompts)
-const ASSISTANT_INSTRUCTIONS = `Je bent Hulpwijzer, een vriendelijke assistent voor alleenstaande moeders in Nederland. Spreek simpel Nederlands (B1), wees warm en geduldig. Help met toeslagen: huurtoeslag, zorgtoeslag, kinderbijslag, kindgebonden budget, kinderopvangtoeslag, bijzondere bijstand. Geef GEEN juridisch advies. Houd antwoorden kort (max 3-4 zinnen).
+// Build user context string from profile (non-PII only)
+function buildUserContext(profile: Record<string, unknown>): string {
+  const parts: string[] = [];
 
-Gebruiker vraagt: `;
+  if (profile.is_single_parent) {
+    parts.push("alleenstaande ouder");
+  }
+
+  if (profile.number_of_children && Number(profile.number_of_children) > 0) {
+    const childCount = Number(profile.number_of_children);
+    parts.push(`${childCount} ${childCount === 1 ? "kind" : "kinderen"}`);
+
+    if (Array.isArray(profile.children_ages) && profile.children_ages.length > 0) {
+      const ages = profile.children_ages.filter((a: unknown) => typeof a === "number" && a > 0);
+      if (ages.length > 0) {
+        parts.push(`leeftijden: ${ages.join(", ")} jaar`);
+      }
+    }
+  }
+
+  if (profile.income_range) {
+    const incomeMap: Record<string, string> = {
+      low: "laag inkomen",
+      middle: "middeninkomen",
+      high: "hoog inkomen",
+    };
+    const incomeText = incomeMap[String(profile.income_range)];
+    if (incomeText) parts.push(incomeText);
+  }
+
+  if (profile.employment_status) {
+    const statusMap: Record<string, string> = {
+      employed: "in loondienst",
+      self_employed: "zelfstandige",
+      unemployed: "werkloos",
+      student: "student",
+      retired: "gepensioneerd",
+    };
+    const statusText = statusMap[String(profile.employment_status)];
+    if (statusText) parts.push(statusText);
+  }
+
+  if (profile.housing_type === "rent") {
+    parts.push("huurt");
+    if (profile.monthly_rent && Number(profile.monthly_rent) > 0) {
+      parts.push(`huur €${profile.monthly_rent}/maand`);
+    }
+  } else if (profile.housing_type === "own") {
+    parts.push("koopwoning");
+  }
+
+  if (profile.has_debts) {
+    parts.push("heeft schulden");
+  }
+
+  if (profile.has_dutch_residence === false) {
+    parts.push("geen verblijfsvergunning");
+  }
+
+  if (profile.has_health_insurance === false) {
+    parts.push("geen zorgverzekering");
+  }
+
+  return parts.length > 0 ? parts.join(", ") : "";
+}
+
+// Instructions for the assistant (prepended to first message since GreenPT doesn't support system prompts)
+const ASSISTANT_INSTRUCTIONS = `Je bent Hulpwijzer, een vriendelijke assistent voor alleenstaande moeders in Nederland. Spreek simpel Nederlands (B1), wees warm en geduldig. Help met toeslagen: huurtoeslag, zorgtoeslag, kinderbijslag, kindgebonden budget, kinderopvangtoeslag, bijzondere bijstand. Geef GEEN juridisch advies. Houd antwoorden kort (max 3-4 zinnen). Als je informatie mist om goed te kunnen helpen (zoals gezinssituatie, inkomen, of woonsituatie), vraag dan vriendelijk naar wat je nodig hebt.`;
 
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
-    const { message, conversation_history = [] } = body;
+    const { message, conversation_history = [], user_profile = {} } = body;
 
     if (!message?.trim()) {
       return NextResponse.json({ error: "No message provided" }, { status: 400 });
@@ -61,10 +125,16 @@ export async function POST(request: NextRequest) {
     // Strip PII from the user message
     const cleanedMessage = stripPII(message);
 
+    // Build user context from profile (for personalized responses)
+    const userContext = buildUserContext(user_profile);
+    const contextString = userContext
+      ? `\n\nBekende gegevens van deze gebruiker: ${userContext}. Gebruik deze informatie om relevante toeslagen aan te bevelen. Vraag alleen naar ontbrekende info als dat nodig is voor je advies.`
+      : "\n\nGeen profielgegevens bekend. Vraag vriendelijk naar de situatie van de gebruiker om goed te kunnen helpen.";
+
     // Build messages array for the API (no system prompt - GreenPT doesn't support it)
     const isFirstMessage = conversation_history.length === 0;
     const userContent = isFirstMessage
-      ? ASSISTANT_INSTRUCTIONS + cleanedMessage
+      ? ASSISTANT_INSTRUCTIONS + contextString + "\n\n" + cleanedMessage
       : cleanedMessage;
 
     const messages: ChatMessage[] = [

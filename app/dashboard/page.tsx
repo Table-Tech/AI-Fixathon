@@ -151,7 +151,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
-                <Link href="/dashboard/intake">
+                <Link href="/assistent">
                   <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
                     <svg
                       className="w-6 h-6"
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                       />
                     </svg>
-                    <span className="text-sm">Nieuwe intake</span>
+                    <span className="text-sm">Chat assistent</span>
                   </Button>
                 </Link>
                 <Link href="/dashboard/documenten">
