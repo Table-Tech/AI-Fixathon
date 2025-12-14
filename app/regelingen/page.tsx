@@ -38,7 +38,7 @@ export default function RegelingenPage() {
       <Header />
 
       <main className="flex-1">
-        {/* Scanner CTA Banner */}
+        {/* Snelle Check CTA Banner */}
         <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary)]/80 text-white">
           <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -59,15 +59,15 @@ export default function RegelingenPage() {
                 </div>
               </div>
               <div className="flex-shrink-0">
-                <Link href="/scanner">
+                <Link href="/check">
                   <Button
                     size="lg"
                     className="w-full md:w-auto bg-white text-[var(--primary)] hover:bg-white/90 font-semibold shadow-lg"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Start de Scanner
+                    Start de Snelle Check
                   </Button>
                 </Link>
               </div>
@@ -211,15 +211,15 @@ export default function RegelingenPage() {
               Niet zeker waar je recht op hebt?
             </h2>
             <p className="mt-4 text-[var(--muted-foreground)]">
-              Gebruik onze gratis scanner en ontdek binnen 2 minuten welke regelingen bij jouw situatie passen.
+              Doe onze gratis snelle check en ontdek binnen 2 minuten welke regelingen bij jouw situatie passen.
             </p>
             <div className="mt-6">
-              <Link href="/scanner">
+              <Link href="/check">
                 <Button size="lg">
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Start de Scanner
+                  Start de Snelle Check
                 </Button>
               </Link>
             </div>

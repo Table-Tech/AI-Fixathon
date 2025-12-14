@@ -39,7 +39,7 @@ const initialFormData: FormData = {
 
 const TOTAL_STEPS = 5;
 
-export default function ScannerPage() {
+export default function CheckPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -78,7 +78,7 @@ export default function ScannerPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/scanner", {
+      const response = await fetch("/api/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -91,10 +91,10 @@ export default function ScannerPage() {
       }
 
       // Store matches in sessionStorage (URL params have length limits)
-      sessionStorage.setItem("scanner_matches", JSON.stringify(result.matches));
+      sessionStorage.setItem("check_matches", JSON.stringify(result.matches));
 
       // Navigate to results page
-      router.push("/scanner/resultaten");
+      router.push("/check/resultaten");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Er ging iets mis");
     } finally {
@@ -103,63 +103,102 @@ export default function ScannerPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[var(--background)] to-[var(--muted)]">
+    <div className="min-h-screen flex flex-col bg-[var(--background)]">
       <Header />
 
-      <main className="flex-1 px-4 py-8 md:py-12">
-        <div className="max-w-2xl mx-auto">
-          {/* Back link */}
-          <Link
-            href="/regelingen"
-            className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-6 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Terug naar regelingen
-          </Link>
-
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--primary)]/10 mb-4">
-              <svg className="w-8 h-8 text-[var(--primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">
-              Regelingen Scanner
-            </h1>
-            <p className="text-[var(--muted-foreground)]">
-              Beantwoord een paar simpele vragen en ontdek waar je recht op hebt
-            </p>
+      <main className="flex-1">
+        {/* Hero Header - Modern gradient design */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-[var(--primary)] via-[var(--primary)]/90 to-[var(--primary)]/70">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
           </div>
 
-          {/* Privacy notice */}
-          <div className="bg-[var(--primary)]/5 border border-[var(--primary)]/20 rounded-lg p-4 mb-6">
-            <div className="flex gap-3">
-              <svg className="w-5 h-5 text-[var(--primary)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          <div className="relative max-w-2xl mx-auto px-4 py-8 md:py-12">
+            {/* Back link */}
+            <Link
+              href="/regelingen"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <div>
-                <p className="font-medium text-sm">Jouw privacy is veilig</p>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  We vragen geen naam of persoonlijke identificatie. Je gegevens worden alleen gebruikt om regelingen te matchen.
-                </p>
+              Terug naar regelingen
+            </Link>
+
+            {/* Header content */}
+            <div className="text-center text-white">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Klaar in 2 minuten
+              </div>
+
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                Snelle Check
+              </h1>
+              <p className="text-white/90 text-lg max-w-md mx-auto">
+                Ontdek in een paar stappen welke regelingen bij jouw situatie passen
+              </p>
+
+              {/* Trust indicators */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-white/80 text-sm">
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  100% Anoniem
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Gratis
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Direct resultaat
+                </span>
+              </div>
+            </div>
+
+            {/* Progress indicator - Modern style */}
+            <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+              <div className="flex items-center justify-between text-sm text-white/90 mb-3">
+                <span className="font-medium">Stap {step} van {TOTAL_STEPS}</span>
+                <span>{Math.round((step / TOTAL_STEPS) * 100)}%</span>
+              </div>
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
+                />
+              </div>
+              {/* Step labels */}
+              <div className="flex justify-between mt-3">
+                {["Gezin", "Werk", "Wonen", "Extra", "Klaar"].map((label, i) => (
+                  <span
+                    key={label}
+                    className={`text-xs transition-colors ${
+                      i + 1 <= step ? "text-white" : "text-white/50"
+                    }`}
+                  >
+                    {label}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Progress bar */}
-          <div className="mb-8">
-            <div className="flex justify-between text-sm text-[var(--muted-foreground)] mb-2">
-              <span>Stap {step} van {TOTAL_STEPS}</span>
-              <span>{Math.round((step / TOTAL_STEPS) * 100)}% voltooid</span>
-            </div>
-            <Progress value={step} max={TOTAL_STEPS} />
-          </div>
-
-          {/* Form Card */}
-          <Card className="shadow-lg">
+        {/* Form Card */}
+        <div className="max-w-2xl mx-auto px-4 -mt-4 pb-8 md:pb-12">
+          <Card className="shadow-xl border-0">
             <CardContent className="p-6 md:p-8">
               {/* Step 1: Children */}
               {step === 1 && (
@@ -199,23 +238,34 @@ export default function ScannerPage() {
                         <label className="block text-sm font-medium mb-3">
                           Leeftijd van je kinderen
                         </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-3">
                           {Array(formData.number_of_children).fill(0).map((_, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <span className="text-[var(--muted-foreground)] text-sm whitespace-nowrap min-w-[60px]">
-                                Kind {index + 1}:
+                            <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-[var(--border)] bg-[var(--muted)]/30">
+                              <span className="text-sm font-medium">
+                                Kind {index + 1}
                               </span>
-                              <select
-                                value={formData.children_ages[index] || 0}
-                                onChange={(e) => handleChildrenAgeChange(index, parseInt(e.target.value))}
-                                className="flex-1 px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] text-sm"
-                              >
-                                {Array(18).fill(0).map((_, age) => (
-                                  <option key={age} value={age}>
-                                    {age} jaar
-                                  </option>
-                                ))}
-                              </select>
+                              <div className="flex items-center gap-3">
+                                <button
+                                  type="button"
+                                  onClick={() => handleChildrenAgeChange(index, Math.max(0, (formData.children_ages[index] || 0) - 1))}
+                                  className="w-10 h-10 rounded-full border-2 border-[var(--border)] hover:border-[var(--primary)] flex items-center justify-center text-lg font-medium transition-colors"
+                                  disabled={(formData.children_ages[index] || 0) <= 0}
+                                >
+                                  −
+                                </button>
+                                <div className="w-16 text-center">
+                                  <span className="text-xl font-bold">{formData.children_ages[index] || 0}</span>
+                                  <span className="text-xs text-[var(--muted-foreground)] block">jaar</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleChildrenAgeChange(index, Math.min(17, (formData.children_ages[index] || 0) + 1))}
+                                  className="w-10 h-10 rounded-full border-2 border-[var(--border)] hover:border-[var(--primary)] flex items-center justify-center text-lg font-medium transition-colors"
+                                  disabled={(formData.children_ages[index] || 0) >= 17}
+                                >
+                                  +
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>

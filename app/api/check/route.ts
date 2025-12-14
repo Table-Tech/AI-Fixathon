@@ -3,7 +3,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 
 // Types
-interface ScannerFormData {
+interface CheckFormData {
   number_of_children: number;
   children_ages: number[];
   is_single_parent: boolean;
@@ -55,7 +55,7 @@ interface MatchResult {
 }
 
 // Mapping from form data to eligible_for tags
-function getUserTags(formData: ScannerFormData): { tag: string; label: string }[] {
+function getUserTags(formData: CheckFormData): { tag: string; label: string }[] {
   const tags: { tag: string; label: string }[] = [];
 
   // Income-based tags
@@ -110,7 +110,7 @@ function getUserTags(formData: ScannerFormData): { tag: string; label: string }[
 function calculateMatchScore(
   regeling: Regeling,
   userTags: { tag: string; label: string }[],
-  formData: ScannerFormData
+  formData: CheckFormData
 ): { score: number; reasons: string[] } {
   const eligibleFor = regeling.eligible_for || [];
   const matchedTags = userTags.filter((ut) => eligibleFor.includes(ut.tag));
@@ -223,7 +223,7 @@ function calculateMatchScore(
 
 export async function POST(request: Request) {
   try {
-    const formData: ScannerFormData = await request.json();
+    const formData: CheckFormData = await request.json();
     const supabase = createServerClient();
 
     // Fetch all active regelingen
@@ -273,7 +273,7 @@ export async function POST(request: Request) {
         const { data: { user } } = await supabase.auth.getUser(authCookie.value);
 
         if (user) {
-          // Update profile with scanner data
+          // Update profile with check data
           const profileUpdate = {
             number_of_children: formData.number_of_children,
             children_ages: formData.children_ages,
@@ -308,7 +308,7 @@ export async function POST(request: Request) {
       user_tags: userTags.map((t) => t.tag),
     });
   } catch (err) {
-    console.error("Scanner API error:", err);
+    console.error("Check API error:", err);
     return NextResponse.json(
       { error: "Er ging iets mis bij het berekenen van je regelingen" },
       { status: 500 }

@@ -23,7 +23,7 @@ export default function ResultatenPage() {
 
   useEffect(() => {
     // Read matches from sessionStorage
-    const storedMatches = sessionStorage.getItem("scanner_matches");
+    const storedMatches = sessionStorage.getItem("check_matches");
     if (storedMatches) {
       try {
         setMatches(JSON.parse(storedMatches));
@@ -85,13 +85,13 @@ export default function ResultatenPage() {
         <div className="max-w-4xl mx-auto">
           {/* Back link */}
           <Link
-            href="/scanner"
+            href="/check"
             className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-6 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Opnieuw scannen
+            Opnieuw checken
           </Link>
 
           {matches.length > 0 ? (
@@ -278,7 +278,7 @@ export default function ResultatenPage() {
                 Maar er zijn mogelijk nog andere opties!
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/scanner">
+                <Link href="/check">
                   <Button>Opnieuw proberen</Button>
                 </Link>
                 <Link href="/regelingen">
