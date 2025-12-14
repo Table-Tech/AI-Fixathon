@@ -15,17 +15,12 @@ const INITIAL_MESSAGE: Message = {
     "Hoi! Ik ben je persoonlijke hulpwijzer. Ik help je ontdekken welke toeslagen en regelingen er voor jou zijn.\n\nVertel eens, wat is je situatie? Ben je bijvoorbeeld alleenstaand, heb je kinderen, of werk je?",
 };
 
-const MOCK_RESPONSES = [
-  "Dank je wel voor het delen. Dat helpt me om je beter te begrijpen.\n\nKun je me ook vertellen hoe je woonsituatie is? Huur je of heb je een koopwoning?",
-  "Oké, duidelijk! Op basis van wat je vertelt, zie ik al een paar regelingen die interessant kunnen zijn.\n\nNog één vraag: heb je een idee van je maandelijkse inkomen? Dat hoeft niet precies, een indicatie is genoeg.",
-  "Top! Ik heb nu een goed beeld van je situatie.\n\nIk zie dat je mogelijk recht hebt op:\n\n✓ Zorgtoeslag\n✓ Huurtoeslag\n✓ Kindgebonden budget\n\nWil je dat ik je help met het aanvragen? Ik kan je stap voor stap begeleiden.",
-];
+const FALLBACK_RESPONSE = "Sorry, er ging iets mis. Probeer het nog eens of typ je vraag opnieuw.";
 
 export default function AssistentPage() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [responseIndex, setResponseIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -34,6 +29,7 @@ export default function AssistentPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [autoSpeak, setAutoSpeak] = useState(true);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,25 +164,65 @@ export default function AssistentPage() {
       content: messageText.trim(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    // Add user message and clear input
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI response
-    await new Promise((resolve) => setTimeout(resolve, 1200 + Math.random() * 800));
+    try {
+      // Build conversation history (exclude initial message for cleaner context)
+      const conversationHistory = updatedMessages.slice(1).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: MOCK_RESPONSES[responseIndex % MOCK_RESPONSES.length],
-    };
+      // Call AI API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: messageText.trim(),
+          conversation_history: conversationHistory,
+          user_profile: {}, // TODO: Add user profile from context/auth
+        }),
+      });
 
-    setMessages((prev) => [...prev, assistantMessage]);
-    setResponseIndex((prev) => prev + 1);
-    setIsTyping(false);
+      let aiResponseText = FALLBACK_RESPONSE;
 
-    // Auto-speak the response
-    speakText(assistantMessage.content);
+      if (response.ok) {
+        const data = await response.json();
+        aiResponseText = data.response || FALLBACK_RESPONSE;
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Chat API error:", response.status, errorData);
+      }
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: aiResponseText,
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+      setIsTyping(false);
+
+      // Auto-speak the response if enabled
+      if (autoSpeak) {
+        speakText(assistantMessage.content);
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      setIsTyping(false);
+
+      // Add error message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: FALLBACK_RESPONSE,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -208,18 +244,41 @@ export default function AssistentPage() {
     <div className="flex flex-col h-screen pb-20 md:pb-0">
       {/* Header */}
       <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--border)] bg-[var(--background)]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-blue-600 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-            </svg>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-blue-600 flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="font-semibold">Hulpwijzer Assistent</h1>
+              <p className="text-xs text-[var(--muted-foreground)]">
+                {getStatusText()}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-semibold">Hulpwijzer Assistent</h1>
-            <p className="text-xs text-[var(--muted-foreground)]">
-              {getStatusText()}
-            </p>
-          </div>
+          {/* Auto-speak toggle */}
+          <button
+            onClick={() => setAutoSpeak(!autoSpeak)}
+            className={`p-2 rounded-full transition-colors cursor-pointer ${
+              autoSpeak
+                ? "bg-[var(--primary)] text-white"
+                : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+            }`}
+            title={autoSpeak ? "Geluid aan" : "Geluid uit"}
+          >
+            {autoSpeak ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
