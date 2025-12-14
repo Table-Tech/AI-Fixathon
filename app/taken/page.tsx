@@ -253,17 +253,40 @@ export default function TakenPage() {
                           key={subtask.id}
                           className="flex items-start gap-3 cursor-pointer group py-1"
                         >
-                          <input
-                            type="checkbox"
-                            checked={subtask.is_done}
-                            onChange={(e) => toggleSubtask(subtask.id, e.target.checked)}
-                            className="mt-0.5 w-5 h-5 min-w-5 min-h-5 flex-shrink-0 rounded border-[var(--border)] cursor-pointer"
-                          />
+                          <div className="relative mt-0.5 flex-shrink-0">
+                            <input
+                              type="checkbox"
+                              checked={subtask.is_done}
+                              onChange={(e) => toggleSubtask(subtask.id, e.target.checked)}
+                              className="sr-only peer"
+                            />
+                            <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                              subtask.is_done
+                                ? "bg-[var(--primary)] border-[var(--primary)]"
+                                : "border-[var(--muted-foreground)]/40 group-hover:border-[var(--primary)]/60"
+                            }`}>
+                              <svg
+                                className={`w-3 h-3 text-white transition-all duration-200 ${
+                                  subtask.is_done ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                           <span
-                            className={`text-sm ${
+                            className={`text-sm transition-all duration-200 ${
                               subtask.is_done
                                 ? "line-through text-[var(--muted-foreground)]"
-                                : ""
+                                : "group-hover:text-[var(--foreground)]"
                             }`}
                           >
                             {subtask.title}
