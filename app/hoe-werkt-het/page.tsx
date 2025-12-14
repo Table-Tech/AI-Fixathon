@@ -10,14 +10,27 @@ export default function HoeWerktHetPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="py-12 md:py-20 px-4 bg-[var(--muted)]">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+          <div className="max-w-4xl mx-auto">
+            {/* Back link */}
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-6 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Terug naar home
+            </Link>
+
+            <div className="text-center">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
               Hoe werkt Hulpwijzer?
             </h1>
             <p className="mt-4 text-lg text-[var(--muted-foreground)] max-w-2xl mx-auto">
               In een paar eenvoudige stappen ontdek je welke financiële
               regelingen er voor jou beschikbaar zijn.
             </p>
+            </div>
           </div>
         </section>
 
@@ -218,11 +231,10 @@ export default function HoeWerktHetPage() {
               Klaar om te beginnen?
             </h2>
             <p className="text-[var(--muted-foreground)] mb-8 max-w-2xl mx-auto">
-              Start nu met de intake en ontdek binnen 5 minuten welke
-              regelingen er voor jou beschikbaar zijn.
+              Chat met onze assistent en ontdek welke regelingen er voor jou beschikbaar zijn.
             </p>
-            <Link href="/intake">
-              <Button size="lg">Start de gratis intake</Button>
+            <Link href="/assistent">
+              <Button size="lg">Chat met assistent</Button>
             </Link>
           </div>
         </section>

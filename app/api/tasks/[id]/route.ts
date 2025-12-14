@@ -42,7 +42,8 @@ export async function GET(
 
     const { user, supabase } = auth;
 
-    const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
       .from("tasks")
       .select(`
         *,
@@ -70,7 +71,7 @@ export async function GET(
     // Sort subtasks by order
     const taskWithSortedSubtasks = {
       ...data,
-      subtasks: data.subtasks?.sort((a: { order: number }, b: { order: number }) => a.order - b.order) || [],
+      subtasks: data?.subtasks?.sort((a: { order: number }, b: { order: number }) => a.order - b.order) || [],
     };
 
     return NextResponse.json({ data: taskWithSortedSubtasks });
@@ -117,7 +118,8 @@ export async function PATCH(
       );
     }
 
-    const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
       .from("tasks")
       .update(updates)
       .eq("id", id)
@@ -183,7 +185,8 @@ export async function DELETE(
     const { user, supabase } = auth;
 
     // First check if task exists and belongs to user
-    const { data: existingTask, error: checkError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingTask, error: checkError } = await (supabase as any)
       .from("tasks")
       .select("id, title")
       .eq("id", id)

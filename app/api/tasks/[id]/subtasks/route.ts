@@ -53,7 +53,8 @@ export async function POST(
     }
 
     // Verify the task belongs to the user
-    const { data: task, error: taskError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: task, error: taskError } = await (supabase as any)
       .from("tasks")
       .select("id")
       .eq("id", taskId)
@@ -68,7 +69,8 @@ export async function POST(
     }
 
     // Get the current max order for this task's subtasks
-    const { data: existingSubtasks } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingSubtasks } = await (supabase as any)
       .from("subtasks")
       .select("order")
       .eq("task_id", taskId)
@@ -78,7 +80,8 @@ export async function POST(
     const nextOrder = (existingSubtasks?.[0]?.order ?? -1) + 1;
 
     // Create the subtask
-    const { data: subtask, error: subtaskError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: subtask, error: subtaskError } = await (supabase as any)
       .from("subtasks")
       .insert({
         task_id: taskId,

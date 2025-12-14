@@ -71,6 +71,17 @@ export default function TakenPage() {
     return (
       <div className="min-h-screen pb-20 md:pb-0">
         <div className="px-4 py-6 max-w-3xl mx-auto">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-4 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Terug naar home
+          </Link>
+
           <div className="mb-6">
             <h1 className="text-2xl font-bold mb-1">Taken</h1>
             <p className="text-sm text-[var(--muted-foreground)]">
@@ -102,6 +113,17 @@ export default function TakenPage() {
   return (
     <div className="min-h-screen pb-20 md:pb-0">
       <div className="px-4 py-6 max-w-3xl mx-auto">
+        {/* Back link */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-4 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Terug naar home
+        </Link>
+
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-1">Taken</h1>

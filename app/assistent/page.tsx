@@ -1,11 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/hooks";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+}
+
+interface UserProfile {
+  number_of_children?: number;
+  children_ages?: number[];
+  is_single_parent?: boolean;
+  income_range?: string;
+  employment_status?: string;
+  housing_type?: string;
+  monthly_rent?: number;
+  has_debts?: boolean;
+  has_dutch_residence?: boolean;
+  has_health_insurance?: boolean;
+  savings_under_limit?: boolean;
 }
 
 const INITIAL_MESSAGE: Message = {
@@ -18,6 +35,7 @@ const INITIAL_MESSAGE: Message = {
 const FALLBACK_RESPONSE = "Sorry, er ging iets mis. Probeer het nog eens of typ je vraag opnieuw.";
 
 export default function AssistentPage() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -30,6 +48,39 @@ export default function AssistentPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // Fetch user profile for personalized context
+  useEffect(() => {
+    async function loadProfile() {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("number_of_children, children_ages, is_single_parent, income_range, employment_status, housing_type, monthly_rent, has_debts, has_dutch_residence, has_health_insurance, savings_under_limit")
+        .eq("id", user.id)
+        .single();
+
+      if (data) {
+        // Only include non-PII fields for personalization
+        setUserProfile({
+          number_of_children: data.number_of_children,
+          children_ages: data.children_ages,
+          is_single_parent: data.is_single_parent,
+          income_range: data.income_range,
+          employment_status: data.employment_status,
+          housing_type: data.housing_type,
+          monthly_rent: data.monthly_rent,
+          has_debts: data.has_debts,
+          has_dutch_residence: data.has_dutch_residence,
+          has_health_insurance: data.has_health_insurance,
+          savings_under_limit: data.savings_under_limit,
+        });
+      }
+    }
+
+    loadProfile();
+  }, [user]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -184,7 +235,7 @@ export default function AssistentPage() {
         body: JSON.stringify({
           message: messageText.trim(),
           conversation_history: conversationHistory,
-          user_profile: {}, // TODO: Add user profile from context/auth
+          user_profile: userProfile || {},
         }),
       });
 
@@ -246,6 +297,16 @@ export default function AssistentPage() {
       <div className="flex-shrink-0 px-4 py-3 border-b border-[var(--border)] bg-[var(--background)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {/* Back button */}
+            <Link
+              href="/"
+              className="p-2 -ml-2 rounded-full hover:bg-[var(--muted)] transition-colors"
+              aria-label="Terug"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </Link>
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-blue-600 flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />

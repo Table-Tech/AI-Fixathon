@@ -47,7 +47,19 @@ export default function RegistrerenPage() {
       </header>
 
       <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <Card className="w-full max-w-md">
+        <div className="w-full max-w-md">
+          {/* Back link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] mb-4 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Terug naar home
+          </Link>
+
+          <Card className="w-full">
           <CardContent className="pt-6">
             {!isSent ? (
               <>
@@ -143,6 +155,7 @@ export default function RegistrerenPage() {
             )}
           </CardContent>
         </Card>
+        </div>
       </main>
     </div>
   );

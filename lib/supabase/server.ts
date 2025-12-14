@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
 
 // Server-side Supabase client with service role key
 // Use this in API routes for admin operations
@@ -11,7 +10,7 @@ export function createServerClient() {
     throw new Error("Missing Supabase environment variables");
   }
 
-  return createClient<Database>(supabaseUrl, supabaseServiceKey, {
+  return createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
@@ -28,7 +27,7 @@ export function createServerClientWithAuth(accessToken?: string) {
     throw new Error("Missing Supabase environment variables (NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY)");
   }
 
-  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  return createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
     },
