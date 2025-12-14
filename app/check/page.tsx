@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Card, CardContent, Progress } from "@/components/ui";
 import { Header } from "@/components/layout";
+import { supabase } from "@/lib/supabase";
 
 // Form step type
 type FormData = {
@@ -78,13 +79,31 @@ export default function CheckPage() {
     setError(null);
 
     try {
+      // Get access token if user is logged in
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      console.log("=== SUBMITTING CHECK ===");
+      console.log("Has access token:", !!accessToken);
+
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+      }
+
       const response = await fetch("/api/check", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
+
+      // DEBUG: Show profile save result in console
+      console.log("=== CHECK API RESPONSE ===");
+      console.log("Profile save debug:", result._debug);
+      console.log("Full result:", result);
+      console.log("===========================");
 
       if (!response.ok) {
         throw new Error(result.error || "Er ging iets mis");

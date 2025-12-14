@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function TakenPage() {
   const { user, loading: authLoading } = useAuth();
-  const { tasks, isLoading, isCreating, createTaskFromAI, toggleSubtask, deleteTask } = useTasks();
+  const { tasks, isLoading, isCreating, createTaskFromAI, toggleSubtask, updateTaskStatus, deleteTask } = useTasks();
 
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");

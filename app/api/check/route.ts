@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
 
 // Types
 interface CheckFormData {
@@ -263,17 +262,33 @@ export async function POST(request: Request) {
       .sort((a, b) => b.match_score - a.match_score); // Sort by score descending
 
     // Try to save to profile if user is authenticated
+    let profileSaveDebug: { step: string; error?: string; userId?: string; saved?: boolean } = { step: "start" };
+
     try {
-      // Check for auth cookie
-      const cookieStore = await cookies();
-      const authCookie = cookieStore.get("sb-access-token");
+      console.log("=== PROFILE SAVE START ===");
 
-      if (authCookie) {
-        // Get user from auth
-        const { data: { user } } = await supabase.auth.getUser(authCookie.value);
+      // Get access token from Authorization header
+      const authHeader = request.headers.get("Authorization");
+      const accessToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
-        if (user) {
-          // Update profile with check data
+      console.log("Auth header present:", !!authHeader);
+      console.log("Access token extracted:", !!accessToken);
+
+      if (!accessToken) {
+        console.log("No access token - user not logged in");
+        profileSaveDebug = { step: "no_token", error: "No Authorization header" };
+      } else {
+        // Validate token and get user
+        const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+        console.log("getUser result:", userData?.user?.id, "error:", userError?.message);
+
+        if (userError || !userData?.user) {
+          profileSaveDebug = { step: "user_validation_failed", error: userError?.message || "No user returned" };
+        } else {
+          const userId = userData.user.id;
+          profileSaveDebug = { step: "user_validated", userId };
+
+          // Update profile
           const profileUpdate = {
             number_of_children: formData.number_of_children,
             children_ages: formData.children_ages,
@@ -290,22 +305,33 @@ export async function POST(request: Request) {
             updated_at: new Date().toISOString(),
           };
 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (supabase as any)
+          console.log("Updating profile for user:", userId);
+          const { error: updateError } = await supabase
             .from("profiles")
             .update(profileUpdate)
-            .eq("id", user.id);
+            .eq("id", userId);
+
+          if (updateError) {
+            console.log("Profile update error:", updateError);
+            profileSaveDebug = { step: "update_failed", error: updateError.message, userId };
+          } else {
+            console.log("Profile SAVED successfully!");
+            profileSaveDebug = { step: "saved", saved: true, userId };
+          }
         }
       }
+
+      console.log("=== PROFILE SAVE END ===");
     } catch (authError) {
-      // Silently fail - user is not authenticated, which is fine
-      console.log("User not authenticated, skipping profile save");
+      console.error("Profile save exception:", authError);
+      profileSaveDebug = { step: "exception", error: String(authError) };
     }
 
     return NextResponse.json({
       matches,
       total_found: matches.length,
       user_tags: userTags.map((t) => t.tag),
+      _debug: profileSaveDebug,
     });
   } catch (err) {
     console.error("Check API error:", err);

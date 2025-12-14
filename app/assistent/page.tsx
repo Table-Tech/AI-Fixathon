@@ -53,17 +53,27 @@ export default function AssistentPage() {
   // Fetch user profile for personalized context
   useEffect(() => {
     async function loadProfile() {
-      if (!user) return;
+      if (!user) {
+        console.log("=== PROFILE LOAD: No user logged in ===");
+        return;
+      }
 
-      const { data } = await supabase
+      console.log("=== PROFILE LOAD: Fetching profile for user:", user.id, "===");
+
+      const { data, error } = await supabase
         .from("profiles")
         .select("number_of_children, children_ages, is_single_parent, income_range, employment_status, housing_type, monthly_rent, has_debts, has_dutch_residence, has_health_insurance, savings_under_limit")
         .eq("id", user.id)
         .single();
 
+      console.log("=== PROFILE LOAD RESULT ===");
+      console.log("Data:", data);
+      console.log("Error:", error);
+      console.log("===========================");
+
       if (data) {
         // Only include non-PII fields for personalization
-        setUserProfile({
+        const profile = {
           number_of_children: data.number_of_children,
           children_ages: data.children_ages,
           is_single_parent: data.is_single_parent,
@@ -75,7 +85,9 @@ export default function AssistentPage() {
           has_dutch_residence: data.has_dutch_residence,
           has_health_insurance: data.has_health_insurance,
           savings_under_limit: data.savings_under_limit,
-        });
+        };
+        console.log("=== PROFILE SET:", profile, "===");
+        setUserProfile(profile);
       }
     }
 
